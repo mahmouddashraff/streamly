@@ -1,0 +1,272 @@
+"use client";
+
+import { useState, useEffect, useTransition } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { Search, User, Menu, X, Globe } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useI18n } from "@/components/I18nProvider";
+import { setLanguage } from "@/app/actions/i18n";
+import { useAuth } from "@/components/AuthProvider";
+import { createClient } from "@/lib/supabase/client";
+
+export default function Navbar({ settings }: { settings?: any }) {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  
+  const pathname = usePathname();
+  const router = useRouter();
+  const { t, locale } = useI18n();
+  const { user, role, loading } = useAuth();
+
+  const isAdmin = pathname.startsWith("/admin");
+  
+  const activeLogo = locale === "en" 
+    ? (settings?.logo_en_url || settings?.site_logo_url)
+    : (settings?.logo_ar_url || settings?.site_logo_url);
+    
+  const activeSiteName = locale === "en"
+    ? (settings?.site_name_en || settings?.site_name || "watch today's events")
+    : (settings?.site_name_ar || settings?.site_name || "شاهد الحدث اليوم");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+      setMobileMenuOpen(false);
+      setIsSearchOpen(false);
+    }
+  };
+
+  const toggleLanguage = () => {
+    const newLocale = locale === "ar" ? "en" : "ar";
+    startTransition(async () => {
+      await setLanguage(newLocale);
+      router.refresh();
+    });
+  };
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.refresh();
+  };
+
+  if (isAdmin) return null;
+
+  const navLinks = [
+    { name: t("soon"), path: "/soon" },
+    { name: t("exclusive"), path: "/exclusives" },
+    { name: t("todaysEvent"), path: "/todays-events" },
+    { name: t("presenters"), path: "/presenters" },
+    { name: t("podcast"), path: "/podcasts" },
+    { name: t("channels"), path: "/channels" },
+    { name: t("guests"), path: "/guests" },
+    { name: t("myList"), path: "/my-list" },
+  ];
+
+  return (
+    <header
+      className={cn(
+        "fixed top-0 w-full z-50 transition-all duration-500 ease-in-out",
+        isScrolled 
+          ? "bg-background/90 backdrop-blur-xl border-b border-white/10 shadow-lg py-2" 
+          : "bg-gradient-to-b from-black/80 via-black/50 to-transparent py-4"
+      )}
+    >
+      <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
+        <div className="flex items-center gap-12 lg:gap-16">
+          <Link href="/" className="flex items-center gap-4 group flex-shrink-0">
+            {activeLogo && (
+              <img 
+                src={activeLogo} 
+                alt={activeSiteName} 
+                className="h-12 md:h-16 w-auto object-contain transition-transform group-hover:scale-105"
+              />
+            )}
+            <div className="flex flex-col items-start text-start">
+              <span 
+                className="text-2xl md:text-3xl font-extrabold transition-transform group-hover:scale-105 group-active:scale-95 whitespace-nowrap" 
+                style={{ fontFamily: '"Alpha Eco", system-ui, sans-serif', color: '#800020' }} 
+              >
+                {activeSiteName}
+              </span>
+              <span 
+                className="text-lg md:text-xl font-medium tracking-wide mt-2 transition-transform group-hover:scale-105 whitespace-nowrap"
+                style={{ fontFamily: 'var(--font-qahiri), system-ui, sans-serif', color: '#C0C0C0', wordSpacing: '0.4em' }}
+              >
+                {t("producer")}
+              </span>
+            </div>
+          </Link>
+          
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex flex-wrap items-center gap-6 xl:gap-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.path}
+                className={cn(
+                  "text-sm font-semibold transition-colors hover:text-white whitespace-nowrap",
+                  pathname === link.path ? "text-white" : "text-gray-400"
+                )}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-4 md:gap-6">
+          {/* Desktop Search */}
+          <div className="hidden md:flex items-center relative">
+            <button 
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className="p-2 text-white hover:text-accent transition-colors"
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+            <form 
+              onSubmit={handleSearch} 
+              className={cn(
+                "absolute ltr:right-0 rtl:left-0 top-1/2 -translate-y-1/2 transition-all duration-300 ease-out flex items-center",
+                isSearchOpen ? "w-64 opacity-100" : "w-0 opacity-0 pointer-events-none"
+              )}
+            >
+              <input
+                type="text"
+                placeholder={t("searchPlaceholder")}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-black/60 border border-white/20 text-white text-sm rounded-md ltr:pl-10 rtl:pr-10 ltr:pr-4 rtl:pl-4 py-2 focus:outline-none focus:border-white/50 backdrop-blur-md transition-all"
+                autoFocus={isSearchOpen}
+                onBlur={() => !searchQuery && setIsSearchOpen(false)}
+              />
+              <Search className="absolute ltr:left-3 rtl:right-3 w-4 h-4 text-gray-400" />
+            </form>
+          </div>
+
+          <button
+            onClick={toggleLanguage}
+            disabled={isPending}
+            className="flex items-center gap-2 text-sm font-bold text-gray-300 hover:text-white transition-colors disabled:opacity-50"
+            aria-label="Switch Language"
+          >
+            <Globe className="w-4 h-4" />
+            <span>{locale === "ar" ? "EN" : "عربي"}</span>
+          </button>
+
+          {!loading && !user && (
+            <Link 
+              href="/login" 
+              className="text-sm font-bold bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-md transition-colors whitespace-nowrap"
+            >
+              {t("signIn")}
+            </Link>
+          )}
+
+          {!loading && user && (
+            <div className="flex items-center gap-4 md:gap-6">
+              {role === 'admin' && (
+                <Link href="/admin" className="text-white hover:text-accent transition-colors" title={t("dashboard")}>
+                   <User className="w-5 h-5" />
+                </Link>
+              )}
+              <button 
+                onClick={handleSignOut}
+                className="text-sm font-bold text-gray-300 hover:text-white transition-colors whitespace-nowrap"
+              >
+                {t("signOut")}
+              </button>
+            </div>
+          )}
+
+          <button 
+            className="lg:hidden text-white hover:text-accent transition-colors"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Menu"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Nav Overlay */}
+      <div 
+        className={cn(
+          "lg:hidden fixed inset-0 top-[73px] bg-background/95 backdrop-blur-xl border-t border-white/10 transition-all duration-300 ease-in-out",
+          mobileMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4 pointer-events-none"
+        )}
+      >
+        <div className="p-6">
+          <form onSubmit={handleSearch} className="mb-8 relative">
+             <Search className="absolute ltr:left-4 rtl:right-4 top-3.5 w-5 h-5 text-gray-400" />
+             <input
+              type="text"
+              placeholder={t("searchPlaceholder")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 text-white text-base rounded-lg ltr:pl-12 rtl:pr-12 ltr:pr-4 rtl:pl-4 py-3 focus:outline-none focus:border-white/30"
+            />
+          </form>
+          <nav className="flex flex-col gap-6">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.path}
+                className={cn(
+                  "text-xl font-bold transition-colors",
+                  pathname === link.path ? "text-white" : "text-gray-400"
+                )}
+              >
+                {link.name}
+              </Link>
+            ))}
+            {!loading && !user && (
+              <Link
+                href="/login"
+                className="text-xl font-bold text-white transition-colors mt-4 bg-white/10 p-3 rounded-lg text-center"
+              >
+                {t("signIn")}
+              </Link>
+            )}
+            {!loading && user && (
+              <div className="flex flex-col gap-6 mt-4 pt-4 border-t border-white/10">
+                {role === 'admin' && (
+                  <Link href="/admin" className="text-xl font-bold text-accent transition-colors">
+                    {t("dashboard")}
+                  </Link>
+                )}
+                <button
+                  onClick={handleSignOut}
+                  className="text-xl font-bold text-gray-400 text-start transition-colors"
+                >
+                  {t("signOut")}
+                </button>
+              </div>
+            )}
+          </nav>
+        </div>
+      </div>
+    </header>
+  );
+}
+

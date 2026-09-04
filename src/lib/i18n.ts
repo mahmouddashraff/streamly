@@ -15,6 +15,7 @@ export const dictionaries = {
     channels: "قنوات",
     guests: "ضيوف",
     soon: "قريباً",
+    downloadApp: "حمل التطبيق",
 
     // Actions & UI
     watchNow: "شاهد الآن",
@@ -99,6 +100,22 @@ export const dictionaries = {
     newPassword: "كلمة المرور الجديدة",
     checkEmailForCode: "تحقق من بريدك الإلكتروني للحصول على رمز التحقق.",
     processing: "جاري المعالجة...",
+    
+    // Download App
+    downloadAppDesc: "تحميل الموقع",
+    downloadAppSubdesc: "ثبّت الموقع على هاتفك للوصول إليه بسرعة.",
+    android: "أندرويد",
+    androidStep1: "افتح الموقع باستخدام Google Chrome.",
+    androidStep2: "اضغط على النقاط الثلاث في أعلى اليمين.",
+    androidStep3: "اختر \"تثبيت التطبيق\" أو \"إضافة إلى الشاشة الرئيسية\".",
+    androidStep4: "اضغط على \"تثبيت\" أو \"إضافة\".",
+    androidFinal: "سيظهر الموقع الآن على الشاشة الرئيسية لهاتفك.",
+    iphone: "آيفون",
+    iphoneStep1: "افتح الموقع باستخدام Safari.",
+    iphoneStep2: "اضغط على زر المشاركة.",
+    iphoneStep3: "مرر لأسفل واختر \"إضافة إلى الشاشة الرئيسية\".",
+    iphoneStep4: "اضغط على \"إضافة\".",
+    iphoneFinal: "سيظهر الموقع الآن على الشاشة الرئيسية لهاتف iPhone.",
   },
   en: {
     // Brand
@@ -114,6 +131,7 @@ export const dictionaries = {
     channels: "Channels",
     guests: "Guests",
     soon: "Soon",
+    downloadApp: "Download App",
 
     // Actions & UI
     watchNow: "Watch Now",
@@ -198,6 +216,22 @@ export const dictionaries = {
     newPassword: "New password",
     checkEmailForCode: "We sent a verification code to your email.",
     processing: "Processing...",
+    
+    // Download App
+    downloadAppDesc: "Download the Website",
+    downloadAppSubdesc: "Install the website on your mobile device for quick access.",
+    android: "Android",
+    androidStep1: "Open the website using Google Chrome.",
+    androidStep2: "Tap the three dots (⋮) in the top-right corner.",
+    androidStep3: "Select \"Install app\" or \"Add to Home screen\".",
+    androidStep4: "Tap \"Install\" or \"Add\".",
+    androidFinal: "The website will now appear on your Android home screen.",
+    iphone: "iPhone",
+    iphoneStep1: "Open the website in Safari.",
+    iphoneStep2: "Tap the Share button.",
+    iphoneStep3: "Scroll down and select \"Add to Home Screen\".",
+    iphoneStep4: "Tap \"Add\".",
+    iphoneFinal: "The website will now appear on your iPhone home screen.",
   }
 };
 

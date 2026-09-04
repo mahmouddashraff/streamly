@@ -80,6 +80,7 @@ export default function Navbar({ settings }: { settings?: any }) {
     { name: t("channels"), path: "/channels" },
     { name: t("guests"), path: "/guests" },
     { name: t("myList"), path: "/my-list" },
+    { name: t("downloadApp"), path: "/download-app" },
   ];
 
   return (

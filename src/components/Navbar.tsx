@@ -93,8 +93,20 @@ export default function Navbar({ settings }: { settings?: any }) {
       )}
     >
       <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
-        <div className="flex items-center gap-12 lg:gap-16">
-          <Link href="/" className="flex items-center gap-2 sm:gap-4 group flex-shrink-0 max-w-[65vw]">
+        {/* Left Side: Mobile Hamburger + Logo + Desktop Nav */}
+        <div className="flex items-center gap-3 lg:gap-16 flex-1 lg:flex-none">
+          
+          {/* Mobile Hamburger Menu (Left side) */}
+          <button 
+            className="lg:hidden p-1 -ml-1 ltr:mr-1 rtl:-mr-1 rtl:ml-1 text-white hover:text-accent transition-colors flex-shrink-0"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Menu"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+
+          {/* Logo & Site Name */}
+          <Link href="/" className="flex items-center gap-2 sm:gap-4 group flex-shrink-0 max-w-[50vw] sm:max-w-none">
             {activeLogo && (
               <img 
                 src={activeLogo} 
@@ -110,7 +122,7 @@ export default function Navbar({ settings }: { settings?: any }) {
                 {activeSiteName}
               </span>
               <span 
-                className="text-xs sm:text-lg md:text-xl font-medium tracking-wide mt-0 sm:mt-2 transition-transform group-hover:scale-105 truncate w-full"
+                className="hidden xs:block text-xs sm:text-lg md:text-xl font-medium tracking-wide mt-0 sm:mt-2 transition-transform group-hover:scale-105 truncate w-full"
                 style={{ fontFamily: 'var(--font-qahiri), system-ui, sans-serif', color: '#C0C0C0', wordSpacing: '0.4em' }}
               >
                 {t("producer")}
@@ -135,7 +147,8 @@ export default function Navbar({ settings }: { settings?: any }) {
           </nav>
         </div>
 
-        <div className="flex items-center gap-4 md:gap-6">
+        {/* Right Side: Search, Lang, Login/User */}
+        <div className="flex items-center justify-end gap-2 sm:gap-4 md:gap-6 flex-shrink-0">
           {/* Desktop Search */}
           <div className="hidden md:flex items-center relative">
             <button 
@@ -168,24 +181,25 @@ export default function Navbar({ settings }: { settings?: any }) {
           <button
             onClick={toggleLanguage}
             disabled={isPending}
-            className="flex items-center gap-2 text-sm font-bold text-gray-300 hover:text-white transition-colors disabled:opacity-50"
+            className="flex items-center gap-1 sm:gap-2 text-sm font-bold text-gray-300 hover:text-white transition-colors disabled:opacity-50"
             aria-label="Switch Language"
           >
             <Globe className="w-4 h-4" />
-            <span>{locale === "ar" ? "EN" : "عربي"}</span>
+            <span className="hidden sm:inline">{locale === "ar" ? "EN" : "عربي"}</span>
+            <span className="sm:hidden">{locale === "ar" ? "EN" : "AR"}</span>
           </button>
 
           {!loading && !user && (
             <Link 
               href="/login" 
-              className="text-sm font-bold bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-md transition-colors whitespace-nowrap"
+              className="text-xs sm:text-sm font-bold bg-white/10 hover:bg-white/20 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-md transition-colors whitespace-nowrap"
             >
               {t("signIn")}
             </Link>
           )}
 
           {!loading && user && (
-            <div className="flex items-center gap-4 md:gap-6">
+            <div className="flex items-center gap-3 md:gap-6">
               {role === 'admin' && (
                 <Link href="/admin" className="text-white hover:text-accent transition-colors" title={t("dashboard")}>
                    <User className="w-5 h-5" />
@@ -193,20 +207,12 @@ export default function Navbar({ settings }: { settings?: any }) {
               )}
               <button 
                 onClick={handleSignOut}
-                className="text-sm font-bold text-gray-300 hover:text-white transition-colors whitespace-nowrap"
+                className="text-xs sm:text-sm font-bold text-gray-300 hover:text-white transition-colors whitespace-nowrap"
               >
                 {t("signOut")}
               </button>
             </div>
           )}
-
-          <button 
-            className="lg:hidden text-white hover:text-accent transition-colors"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
         </div>
       </div>
 

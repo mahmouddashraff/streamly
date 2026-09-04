@@ -23,15 +23,15 @@ export default function Footer({ settings }: { settings?: any }) {
       <div className="container mx-auto px-4 md:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div>
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 mb-4">
               {activeLogo && (
                 <img 
                   src={activeLogo} 
                   alt={activeSiteName} 
-                  className="h-12 md:h-16 w-auto object-contain"
+                  className="h-12 md:h-16 w-auto object-contain flex-shrink-0"
                 />
               )}
-              <h3 className="text-xl whitespace-nowrap" style={{ fontFamily: '"Alpha Eco", system-ui, sans-serif', color: '#800020' }}>
+              <h3 className="text-lg sm:text-xl max-w-full" style={{ fontFamily: '"Alpha Eco", system-ui, sans-serif', color: '#800020', wordBreak: 'break-word' }}>
                 {activeSiteName}
               </h3>
             </div>

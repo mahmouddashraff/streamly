@@ -94,23 +94,23 @@ export default function Navbar({ settings }: { settings?: any }) {
     >
       <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
         <div className="flex items-center gap-12 lg:gap-16">
-          <Link href="/" className="flex items-center gap-4 group flex-shrink-0">
+          <Link href="/" className="flex items-center gap-2 sm:gap-4 group flex-shrink-0 max-w-[65vw]">
             {activeLogo && (
               <img 
                 src={activeLogo} 
                 alt={activeSiteName} 
-                className="h-12 md:h-16 w-auto object-contain transition-transform group-hover:scale-105"
+                className="h-8 sm:h-12 md:h-16 w-auto object-contain transition-transform group-hover:scale-105 flex-shrink-0"
               />
             )}
-            <div className="flex flex-col items-start text-start">
+            <div className="flex flex-col items-start text-start overflow-hidden">
               <span 
-                className="text-2xl md:text-3xl font-extrabold transition-transform group-hover:scale-105 group-active:scale-95 whitespace-nowrap" 
+                className="text-lg sm:text-2xl md:text-3xl font-extrabold transition-transform group-hover:scale-105 group-active:scale-95 truncate w-full" 
                 style={{ fontFamily: '"Alpha Eco", system-ui, sans-serif', color: '#800020' }} 
               >
                 {activeSiteName}
               </span>
               <span 
-                className="text-lg md:text-xl font-medium tracking-wide mt-2 transition-transform group-hover:scale-105 whitespace-nowrap"
+                className="text-xs sm:text-lg md:text-xl font-medium tracking-wide mt-0 sm:mt-2 transition-transform group-hover:scale-105 truncate w-full"
                 style={{ fontFamily: 'var(--font-qahiri), system-ui, sans-serif', color: '#C0C0C0', wordSpacing: '0.4em' }}
               >
                 {t("producer")}

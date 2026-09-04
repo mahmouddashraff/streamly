@@ -46,9 +46,9 @@ export default async function RootLayout({
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
-    <html lang={locale} dir={dir} className="dark">
+    <html lang={locale} dir={dir} className="dark overflow-x-hidden">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${qahiri.variable} antialiased bg-background text-foreground min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} ${qahiri.variable} antialiased bg-background text-foreground min-h-screen flex flex-col overflow-x-hidden w-full`}
       >
         <I18nProvider locale={locale}>
           <AuthProvider>

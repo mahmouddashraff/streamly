@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useI18n } from "@/components/I18nProvider";
+import { notifyAdminOfLogin } from "@/app/actions/notify-login";
 
 type ViewState = 'sign_in' | 'sign_up' | 'forgot_email' | 'forgot_verify' | 'forgot_reset';
 
@@ -53,6 +54,7 @@ function LoginContent() {
       if (error) {
         setError(error.message);
       } else {
+        await notifyAdminOfLogin();
         router.push(redirectUrl);
         router.refresh();
       }
@@ -65,6 +67,7 @@ function LoginContent() {
       if (error) {
         setError(error.message);
       } else {
+        await notifyAdminOfLogin();
         router.push(redirectUrl);
         router.refresh();
       }

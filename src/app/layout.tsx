@@ -28,9 +28,20 @@ const qahiri = Qahiri({
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const siteName = settings?.site_name || "شاهد الحدث اليوم";
   return {
-    title: settings?.site_name ? `${settings.site_name} | Premium Streaming` : "STREAMLY | Premium Streaming",
+    title: `${siteName} | Premium Streaming`,
     description: settings?.site_description || "A cinematic journey beyond the edge of the known world.",
+    appleWebApp: {
+      title: "شاهد الحدث اليوم",
+      statusBarStyle: "black-translucent",
+      capable: true,
+    },
+    applicationName: "شاهد الحدث اليوم",
+    icons: {
+      icon: "/pwa-icon-ar-v2.png",
+      apple: "/pwa-icon-ar-v2.png",
+    },
   };
 }
 

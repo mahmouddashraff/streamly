@@ -22,10 +22,10 @@ export default async function AdminDashboard() {
   ];
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold tracking-tight mb-8">Dashboard</h1>
+    <div className="p-4 md:p-8">
+      <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-6 md:mb-8">Dashboard</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
@@ -42,14 +42,14 @@ export default async function AdminDashboard() {
         })}
       </div>
 
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold">Recent Videos</h2>
+      <div className="flex items-center justify-between mb-4 md:mb-6">
+        <h2 className="text-lg md:text-xl font-semibold">Recent Videos</h2>
         <Link href="/admin/videos" className="text-sm text-accent hover:underline">
           View all
         </Link>
       </div>
 
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-card border border-border rounded-xl overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="bg-muted text-muted-foreground border-b border-border">
             <tr>

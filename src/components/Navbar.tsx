@@ -45,6 +45,18 @@ export default function Navbar({ settings }: { settings?: any }) {
     setMobileMenuOpen(false);
   }, [pathname]);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -219,7 +231,7 @@ export default function Navbar({ settings }: { settings?: any }) {
       {/* Mobile Nav Overlay */}
       <div 
         className={cn(
-          "lg:hidden fixed inset-0 top-[73px] bg-background/95 backdrop-blur-xl border-t border-white/10 transition-all duration-300 ease-in-out",
+          "lg:hidden fixed inset-0 top-[73px] bg-background/95 backdrop-blur-xl border-t border-white/10 transition-all duration-300 ease-in-out overflow-y-auto overscroll-contain pb-24",
           mobileMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4 pointer-events-none"
         )}
       >

@@ -104,9 +104,9 @@ export default function Navbar({ settings }: { settings?: any }) {
           : "bg-gradient-to-b from-black/80 via-black/50 to-transparent py-4"
       )}
     >
-      <div className="container mx-auto px-3 sm:px-4 md:px-8 flex items-center justify-between gap-2">
-        {/* Left Side: Mobile Hamburger + Logo + Desktop Nav */}
-        <div className="flex items-center gap-2 sm:gap-3 lg:gap-8 xl:gap-12 flex-1 min-w-0">
+      <div className="container mx-auto px-3 sm:px-4 md:px-8 flex items-center justify-between gap-2 lg:gap-4 xl:gap-8">
+        {/* 1. Left Side: Mobile Hamburger + Logo */}
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 min-w-0">
           
           {/* Mobile Hamburger Menu (Left side) */}
           <button 
@@ -123,41 +123,41 @@ export default function Navbar({ settings }: { settings?: any }) {
               <img 
                 src={activeLogo} 
                 alt={activeSiteName} 
-                className="h-6 xs:h-7 sm:h-12 md:h-16 lg:h-12 xl:h-14 w-auto object-contain transition-transform group-hover:scale-105 flex-shrink-0"
+                className="h-6 xs:h-7 sm:h-12 md:h-16 lg:h-10 xl:h-12 2xl:h-14 w-auto object-contain transition-transform group-hover:scale-105 flex-shrink-0"
               />
             )}
             <div className="flex flex-col items-start text-start min-w-0">
               <span 
-                className="text-sm xs:text-base sm:text-2xl md:text-3xl lg:text-2xl xl:text-3xl font-extrabold transition-transform group-hover:scale-105 group-active:scale-95 whitespace-normal lg:whitespace-nowrap leading-tight break-words max-w-[120px] sm:max-w-none" 
+                className="text-sm xs:text-base sm:text-2xl md:text-3xl lg:text-xl xl:text-2xl 2xl:text-3xl font-extrabold transition-transform group-hover:scale-105 group-active:scale-95 whitespace-normal lg:whitespace-nowrap leading-tight break-words max-w-[120px] sm:max-w-none" 
                 style={{ fontFamily: '"Alpha Eco", system-ui, sans-serif', color: '#800020' }} 
               >
                 {activeSiteName}
               </span>
               <span 
-                className="hidden sm:block text-xs sm:text-lg md:text-xl lg:text-lg xl:text-xl font-medium tracking-wide mt-0 sm:mt-2 transition-transform group-hover:scale-105 truncate w-full"
+                className="hidden sm:block text-xs sm:text-lg md:text-xl lg:text-sm xl:text-base 2xl:text-lg font-medium tracking-wide mt-0 sm:mt-1 transition-transform group-hover:scale-105 truncate w-full"
                 style={{ fontFamily: 'var(--font-qahiri), system-ui, sans-serif', color: '#C0C0C0', wordSpacing: '0.4em' }}
               >
                 {t("producer")}
               </span>
             </div>
           </Link>
-          
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-4 xl:gap-6 flex-nowrap flex-shrink-0">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.path}
-                className={cn(
-                  "text-sm font-semibold transition-colors hover:text-white whitespace-nowrap",
-                  pathname === link.path ? "text-white" : "text-gray-400"
-                )}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </nav>
         </div>
+          
+        {/* 2. Center: Desktop Nav */}
+        <nav className="hidden lg:flex items-center justify-center gap-2 xl:gap-4 2xl:gap-6 flex-nowrap flex-1 min-w-0">
+          {navLinks.map((link) => (
+            <Link
+              key={link.name}
+              href={link.path}
+              className={cn(
+                "text-xs xl:text-sm font-semibold transition-colors hover:text-white whitespace-nowrap",
+                pathname === link.path ? "text-white" : "text-gray-400"
+              )}
+            >
+              {link.name}
+            </Link>
+          ))}
+        </nav>
 
         {/* Right Side: Search, Lang, Login/User */}
         <div className="flex items-center justify-end gap-2 sm:gap-4 md:gap-6 flex-shrink-0">

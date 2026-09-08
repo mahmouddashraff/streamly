@@ -21,6 +21,75 @@ export default function WatchClientPage({ video, relatedVideos }: { video: Video
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
+  // Secure Video State
+  const [secureUrl, setSecureUrl] = useState<string | null>(null);
+  const [checkingAccess, setCheckingAccess] = useState(false);
+  const [accessError, setAccessError] = useState<string | null>(null);
+  const [requestStatus, setRequestStatus] = useState<string | null>(null);
+  const [isRequesting, setIsRequesting] = useState(false);
+  const [requestMobile, setRequestMobile] = useState("");
+  
+  // 1. Fetch Secure URL if Price > 0
+  useEffect(() => {
+    if (!video.price || video.price <= 0) {
+      setSecureUrl(video.video_url);
+      return;
+    }
+
+    if (authLoading) return;
+    if (!user) return; // UI handles login prompt
+
+    async function checkAccess() {
+      setCheckingAccess(true);
+      try {
+        const res = await fetch(`/api/videos/${video.id}/access`);
+        const data = await res.json();
+        
+        if (res.ok && data.url) {
+          setSecureUrl(data.url);
+          setAccessError(null);
+        } else {
+          setAccessError(data.error || "Access denied");
+          if (data.requestStatus) {
+            setRequestStatus(data.requestStatus);
+          }
+        }
+      } catch (err) {
+        setAccessError("Failed to verify access");
+      } finally {
+        setCheckingAccess(false);
+      }
+    }
+
+    checkAccess();
+  }, [video.id, video.price, video.video_url, user, authLoading]);
+
+  // 2. Request Access Submission
+  const handleRequestAccess = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!requestMobile.trim()) return;
+    
+    setIsRequesting(true);
+    try {
+      const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ video_id: video.id, mobile: requestMobile })
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        setRequestStatus("pending");
+      } else {
+        alert(data.error || "Request failed");
+      }
+    } catch (err) {
+      alert("Request failed. Please try again.");
+    } finally {
+      setIsRequesting(false);
+    }
+  };
+  
   useEffect(() => {
     if (!user) {
       setIsSaved(false);
@@ -92,11 +161,9 @@ export default function WatchClientPage({ video, relatedVideos }: { video: Video
         </button>
 
         <div className="mb-10 w-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-white/5 relative aspect-video bg-black flex items-center justify-center">
-          {authLoading ? (
+          {authLoading || checkingAccess ? (
             <div className="text-white/50">{t("loading")}</div>
-          ) : user ? (
-            <VideoPlayer url={video.video_url} poster={video.thumbnail} />
-          ) : (
+          ) : !user && (!video.price || video.price <= 0) ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80">
               <img src={video.thumbnail} alt={getLocalizedField(video, 'title', locale)} className="absolute inset-0 w-full h-full object-cover opacity-20" />
               <div className="relative z-10 text-center flex flex-col items-center gap-6">
@@ -107,6 +174,68 @@ export default function WatchClientPage({ video, relatedVideos }: { video: Video
                 >
                   {t("signIn")}
                 </button>
+              </div>
+            </div>
+          ) : !user && video.price && video.price > 0 ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80">
+              <img src={video.thumbnail} alt={getLocalizedField(video, 'title', locale)} className="absolute inset-0 w-full h-full object-cover opacity-20" />
+              <div className="relative z-10 text-center flex flex-col items-center gap-6">
+                <h3 className="text-2xl md:text-3xl font-bold text-white">{t("signInToWatch")}</h3>
+                <p className="text-gray-300">{t("thisVideoRequiresPurchase")}</p>
+                <button 
+                  onClick={() => router.push(`/login?redirect=/watch/${video.id}`)}
+                  className="bg-accent text-white px-10 py-3.5 rounded-lg font-bold hover:bg-accent-hover transition-colors shadow-lg"
+                >
+                  {t("signIn")}
+                </button>
+              </div>
+            </div>
+          ) : secureUrl ? (
+            <VideoPlayer url={secureUrl} poster={video.thumbnail} />
+          ) : (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 p-4">
+              <img src={video.thumbnail} alt={getLocalizedField(video, 'title', locale)} className="absolute inset-0 w-full h-full object-cover opacity-20" />
+              <div className="relative z-10 w-full max-w-md bg-black/60 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-2xl flex flex-col items-center gap-4 text-center">
+                
+                {requestStatus === "pending" || requestStatus === "contacted" ? (
+                  <>
+                    <Check className="w-16 h-16 text-green-500 mb-2" />
+                    <h3 className="text-xl md:text-2xl font-bold text-white">{t("accessRequestSubmitted")}</h3>
+                    <p className="text-gray-300">{t("adminWillContact")}</p>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-xl md:text-2xl font-bold text-white">{t("thisVideoRequiresPurchase")}</h3>
+                    <div className="bg-white/10 px-4 py-2 rounded-lg my-2">
+                      <p className="text-lg text-white font-bold">{t("price")}: {video.price}</p>
+                    </div>
+                    <p className="text-gray-300 text-sm mb-4">{t("enterDetailsForAccess")}</p>
+                    
+                    <form onSubmit={handleRequestAccess} className="w-full flex flex-col gap-3">
+                      <input 
+                        type="text" 
+                        disabled
+                        value={user?.email || ""}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white opacity-50 cursor-not-allowed"
+                      />
+                      <input 
+                        type="tel" 
+                        required
+                        placeholder={t("mobileNumber")}
+                        value={requestMobile}
+                        onChange={(e) => setRequestMobile(e.target.value)}
+                        className="w-full bg-black/50 border border-white/20 focus:border-accent focus:outline-none rounded-lg px-4 py-3 text-white transition-colors"
+                      />
+                      <button 
+                        type="submit"
+                        disabled={isRequesting}
+                        className="w-full bg-accent text-white px-4 py-3 rounded-lg font-bold hover:bg-accent-hover transition-colors shadow-lg mt-2 disabled:opacity-50"
+                      >
+                        {isRequesting ? t("processing") : t("requestAccess")}
+                      </button>
+                    </form>
+                  </>
+                )}
               </div>
             </div>
           )}

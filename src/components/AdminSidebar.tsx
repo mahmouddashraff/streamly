@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Film, Settings, Home, Menu, X } from "lucide-react";
+import { LayoutDashboard, Film, Settings, Home, Menu, X, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function AdminSidebar() {
@@ -17,6 +17,7 @@ export default function AdminSidebar() {
 
   const links = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+    { name: "Customer Requests", href: "/admin/customer-requests", icon: ClipboardList },
     { name: "Videos", href: "/admin/videos", icon: Film },
     { name: "Podcasts", href: "/admin/podcasts", icon: Film },
     { name: "Exclusives", href: "/admin/exclusives", icon: Film },

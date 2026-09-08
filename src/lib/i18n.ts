@@ -101,6 +101,25 @@ export const dictionaries = {
     checkEmailForCode: "تحقق من بريدك الإلكتروني للحصول على رمز التحقق.",
     processing: "جاري المعالجة...",
     
+    // Purchase & Access
+    thisVideoRequiresPurchase: "هذا الفيديو يتطلب شراء",
+    price: "السعر",
+    enterDetailsForAccess: "أدخل بريدك الإلكتروني ورقم هاتفك لطلب الوصول.",
+    requestAccess: "طلب الوصول",
+    mobileNumber: "رقم الهاتف",
+    customerRequests: "طلبات العملاء",
+    pending: "قيد الانتظار",
+    contacted: "تم التواصل",
+    paid: "تم الدفع",
+    rejected: "مرفوض",
+    grantAccess: "منح الوصول",
+    accessGranted: "تم منح الوصول",
+    revokeAccess: "إلغاء الوصول",
+    myPurchasedVideos: "فيديوهاتي المشتراة",
+    accessRequestSubmitted: "تم إرسال طلب الوصول",
+    adminWillContact: "سيقوم المسؤول بالتواصل معك لإتمام عملية الشراء.",
+    buyVideo: "شراء الفيديو",
+
     // Download App
     downloadAppDesc: "تحميل الموقع",
     downloadAppSubdesc: "ثبّت الموقع على هاتفك للوصول إليه بسرعة.",
@@ -217,6 +236,25 @@ export const dictionaries = {
     checkEmailForCode: "We sent a verification code to your email.",
     processing: "Processing...",
     
+    // Purchase & Access
+    thisVideoRequiresPurchase: "This video requires purchase",
+    price: "Price",
+    enterDetailsForAccess: "Enter your email and mobile number to request access.",
+    requestAccess: "Request Access",
+    mobileNumber: "Mobile Number",
+    customerRequests: "Customer Requests",
+    pending: "Pending",
+    contacted: "Contacted",
+    paid: "Paid",
+    rejected: "Rejected",
+    grantAccess: "Grant Access",
+    accessGranted: "Access Granted",
+    revokeAccess: "Revoke Access",
+    myPurchasedVideos: "My Purchased Videos",
+    accessRequestSubmitted: "Access request submitted",
+    adminWillContact: "An admin will contact you to complete your purchase.",
+    buyVideo: "Buy Video",
+
     // Download App
     downloadAppDesc: "Download the Website",
     downloadAppSubdesc: "Install the website on your mobile device for quick access.",

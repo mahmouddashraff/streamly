@@ -14,6 +14,34 @@ export interface Video {
   video_url: string;
   published: boolean;
   is_soon?: boolean;
+  price?: number;
+}
+
+export interface VideoAccessRequest {
+  id: string;
+  user_id: string;
+  video_id: string;
+  email: string;
+  mobile: string;
+  price: number;
+  status: 'pending' | 'contacted' | 'paid' | 'rejected';
+  admin_notes?: string | null;
+  created_at: string;
+  updated_at: string;
+  video?: Video;
+  user?: any;
+}
+
+export interface VideoAccessGrant {
+  id: string;
+  user_id: string;
+  video_id: string;
+  request_id?: string | null;
+  granted_by?: string | null;
+  granted_at: string;
+  expires_at?: string | null;
+  revoked_at?: string | null;
+  video?: Video;
 }
 
 export interface Category {

@@ -217,6 +217,12 @@ export default function Navbar({ settings }: { settings?: any }) {
                    <User className="w-5 h-5" />
                 </Link>
               )}
+              <Link 
+                href="/my-purchased-videos"
+                className="text-xs sm:text-sm font-bold text-gray-300 hover:text-white transition-colors whitespace-nowrap"
+              >
+                {t("myPurchasedVideos")}
+              </Link>
               <button 
                 onClick={handleSignOut}
                 className="text-xs sm:text-sm font-bold text-gray-300 hover:text-white transition-colors whitespace-nowrap"
@@ -274,6 +280,9 @@ export default function Navbar({ settings }: { settings?: any }) {
                     {t("dashboard")}
                   </Link>
                 )}
+                <Link href="/my-purchased-videos" className="text-xl font-bold text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                  {t("myPurchasedVideos")}
+                </Link>
                 <button
                   onClick={handleSignOut}
                   className="text-xl font-bold text-gray-400 text-start transition-colors"

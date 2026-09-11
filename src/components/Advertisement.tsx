@@ -17,10 +17,11 @@ export interface AdvertisementData {
 interface AdvertisementProps {
   ad: AdvertisementData;
   className?: string;
+  mediaClassName?: string;
   children?: React.ReactNode;
 }
 
-export default function Advertisement({ ad, className, children }: AdvertisementProps) {
+export default function Advertisement({ ad, className, mediaClassName, children }: AdvertisementProps) {
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -55,6 +56,9 @@ export default function Advertisement({ ad, className, children }: Advertisement
 
   const isVideo = ad.media_type === 'video';
 
+  const defaultMediaClass = "w-full h-full object-cover";
+  const appliedMediaClass = mediaClassName || defaultMediaClass;
+
   const mediaElement = isVideo ? (
     <video
       src={ad.image_url}
@@ -62,7 +66,7 @@ export default function Advertisement({ ad, className, children }: Advertisement
       autoPlay
       loop
       playsInline
-      className="w-full h-full object-cover"
+      className={appliedMediaClass}
       onError={(e) => {
         e.currentTarget.style.display = 'none';
       }}
@@ -71,7 +75,7 @@ export default function Advertisement({ ad, className, children }: Advertisement
     <img
       src={ad.image_url}
       alt={ad.name}
-      className="w-full h-full object-cover"
+      className={appliedMediaClass}
       onError={(e) => {
         e.currentTarget.style.display = 'none';
       }}

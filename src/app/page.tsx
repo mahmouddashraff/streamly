@@ -9,9 +9,8 @@ import { getSiteSettings } from "@/lib/settings";
 import AdLayoutWrapper from "@/components/AdLayoutWrapper";
 import { AdvertisementData } from "@/components/Advertisement";
 import AdVideoRow from "@/components/AdVideoRow";
-
 import React from "react";
-import MobileAdBlock from "@/components/MobileAdBlock";
+import MobileAdRail from "@/components/MobileAdRail";
 
 export const revalidate = 0; // Disable caching to ensure layout updates are immediate
 
@@ -132,36 +131,24 @@ export default async function Home() {
     ['ads_page', 'ads_page_left', 'ads_page_right', 'ads_page_both'].includes(ad.position)
   );
 
-  // 11. Extract Mobile Ads natively interleaving them in content rows
+  // 11. Extract Mobile Ads
   const mobileAds = allAds.filter(ad => 
     ['left', 'right', 'both', 'ads_page_left', 'ads_page_right', 'ads_page_both'].includes(ad.position)
   );
 
-  const rows = [
-    <EntityRow key="soon" title={t("soon")} entities={soonEntities} type="soon" />,
-    <EntityRow key="exc" title={t("exclusive")} entities={exclusives} type="exclusive" />,
-    <EntityRow key="today" title={t("todaysEvent")} entities={todaysEvents} type="todays_event" />,
-    <EntityRow key="pres" title={t("presenters")} entities={presenters} type="presenter" />,
-    <EntityRow key="pod" title={t("podcast")} entities={podcasts} type="podcast" />,
-    <EntityRow key="chan" title={t("channels")} entities={channels} type="channel" />,
-    <EntityRow key="guest" title={t("guests")} entities={guests} type="guest" />,
-    <VideoRow key="mylist" title={t("myList")} videos={myListVideos} />,
-    <AdVideoRow key="ads" title={t("ads")} ads={homepageVideoAds} />
-  ];
-
   return (
     <AdLayoutWrapper leftAds={leftAds} rightAds={rightAds}>
       <HomeReveal settings={settings}>
-        {rows.map((row, index) => (
-          <React.Fragment key={row.key}>
-            {row}
-            {mobileAds[index] && <MobileAdBlock ad={mobileAds[index]} />}
-          </React.Fragment>
-        ))}
-        {/* Render any remaining ads if we have more mobile ads than content rows */}
-        {mobileAds.slice(rows.length).map(ad => (
-          <MobileAdBlock key={ad.id} ad={ad} />
-        ))}
+        <EntityRow title={t("soon")} entities={soonEntities} type="soon" />
+        <EntityRow title={t("exclusive")} entities={exclusives} type="exclusive" />
+        <EntityRow title={t("todaysEvent")} entities={todaysEvents} type="todays_event" />
+        <EntityRow title={t("presenters")} entities={presenters} type="presenter" />
+        <EntityRow title={t("podcast")} entities={podcasts} type="podcast" />
+        <EntityRow title={t("channels")} entities={channels} type="channel" />
+        <EntityRow title={t("guests")} entities={guests} type="guest" />
+        <VideoRow title={t("myList")} videos={myListVideos} />
+        <AdVideoRow title={t("ads")} ads={homepageVideoAds} />
+        <MobileAdRail ads={mobileAds} />
       </HomeReveal>
     </AdLayoutWrapper>
   );

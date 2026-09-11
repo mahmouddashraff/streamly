@@ -10,7 +10,6 @@ import AdLayoutWrapper from "@/components/AdLayoutWrapper";
 import { AdvertisementData } from "@/components/Advertisement";
 import AdVideoRow from "@/components/AdVideoRow";
 import React from "react";
-import MobileAdRail from "@/components/MobileAdRail";
 
 export const revalidate = 0; // Disable caching to ensure layout updates are immediate
 
@@ -131,11 +130,6 @@ export default async function Home() {
     ['ads_page', 'ads_page_left', 'ads_page_right', 'ads_page_both'].includes(ad.position)
   );
 
-  // 11. Extract Mobile Ads
-  const mobileAds = allAds.filter(ad => 
-    ['left', 'right', 'both', 'ads_page_left', 'ads_page_right', 'ads_page_both'].includes(ad.position)
-  );
-
   return (
     <AdLayoutWrapper leftAds={leftAds} rightAds={rightAds}>
       <HomeReveal settings={settings}>
@@ -148,7 +142,6 @@ export default async function Home() {
         <EntityRow title={t("guests")} entities={guests} type="guest" />
         <VideoRow title={t("myList")} videos={myListVideos} />
         <AdVideoRow title={t("ads")} ads={homepageVideoAds} />
-        <MobileAdRail ads={mobileAds} />
       </HomeReveal>
     </AdLayoutWrapper>
   );

@@ -13,11 +13,11 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
       {/* Main Layout Container with Side Rails */}
       <div className="w-full flex justify-center max-w-[1920px] mx-auto pt-[73px] rtl:flex-row-reverse">
         
-        {/* Left Ad Rail (Hidden on mobile/tablet) */}
+        {/* Left Ad Rail */}
         {leftAds.length > 0 && (
-          <aside className="hidden lg:flex w-[160px] xl:w-[200px] 2xl:w-[300px] shrink-0 flex-col gap-4 p-4 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto overflow-x-hidden no-scrollbar">
+          <aside className="flex w-[45px] sm:w-[80px] md:w-[120px] lg:w-[160px] xl:w-[200px] 2xl:w-[300px] shrink-0 flex-col gap-2 lg:gap-4 p-1 sm:p-2 lg:p-4 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto overflow-x-hidden no-scrollbar">
             {leftAds.map(ad => (
-              <Advertisement key={ad.id} ad={ad} className="w-full flex-1 rounded-lg" />
+              <Advertisement key={ad.id} ad={ad} className="w-full flex-1 rounded-sm lg:rounded-lg" mediaClassName="w-full h-full object-contain lg:object-cover" />
             ))}
           </aside>
         )}
@@ -27,11 +27,11 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
           {children}
         </div>
 
-        {/* Right Ad Rail (Hidden on mobile/tablet) */}
+        {/* Right Ad Rail */}
         {rightAds.length > 0 && (
-          <aside className="hidden lg:flex w-[160px] xl:w-[200px] 2xl:w-[300px] shrink-0 flex-col gap-4 p-4 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto overflow-x-hidden no-scrollbar">
+          <aside className="flex w-[45px] sm:w-[80px] md:w-[120px] lg:w-[160px] xl:w-[200px] 2xl:w-[300px] shrink-0 flex-col gap-2 lg:gap-4 p-1 sm:p-2 lg:p-4 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto overflow-x-hidden no-scrollbar">
             {rightAds.map(ad => (
-              <Advertisement key={ad.id} ad={ad} className="w-full flex-1 rounded-lg" />
+              <Advertisement key={ad.id} ad={ad} className="w-full flex-1 rounded-sm lg:rounded-lg" mediaClassName="w-full h-full object-contain lg:object-cover" />
             ))}
           </aside>
         )}

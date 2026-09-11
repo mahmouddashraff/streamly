@@ -43,6 +43,7 @@ export default function AddSoonVideoPage({ params }: { params: Promise<{ id: str
     duration: "",
     video_url: "",
     published: true,
+    price: 0,
   });
 
   useEffect(() => {
@@ -138,6 +139,7 @@ export default function AddSoonVideoPage({ params }: { params: Promise<{ id: str
       ...formData,
       title: formData.title_en,
       description: formData.description_en,
+      price: Number(formData.price) || 0,
       soon_id: soon_id,
     };
     if (postType === "video") {
@@ -180,8 +182,7 @@ export default function AddSoonVideoPage({ params }: { params: Promise<{ id: str
         if (dbError) {
           throw new Error("Database error: " + dbError.message);
         } else {
-          router.push(`/admin/soon/${soon_id}/content`);
-          router.refresh();
+          window.location.href = `/admin/soon/${soon_id}/content`;
         }
         return;
       }
@@ -189,7 +190,7 @@ export default function AddSoonVideoPage({ params }: { params: Promise<{ id: str
       // 2. Upload Video and Save (Only for postType === "video")
       if (sourceType === "upload" && selectedFile) {
         const fileName = `${crypto.randomUUID()}-${selectedFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-        const bucketName = "videos";
+        const bucketName = newContent.price > 0 ? "secure_videos" : "videos";
         const projectId = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
         if (!projectId) {
@@ -227,21 +228,26 @@ export default function AddSoonVideoPage({ params }: { params: Promise<{ id: str
             setUploadProgress(Number(percentage));
           },
           onSuccess: async function () {
-            const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(fileName);
-            newContent.video_url = publicUrlData.publicUrl;
+            let finalVideoUrl = "";
+            if (bucketName === "videos") {
+              const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(fileName);
+              finalVideoUrl = publicUrlData.publicUrl;
+            } else {
+              finalVideoUrl = `${projectId}/storage/v1/object/authenticated/${bucketName}/${fileName}`;
+            }
+            newContent.video_url = finalVideoUrl;
 
             const { error: dbError } = await supabase.from('videos').insert(newContent);
 
             if (dbError) {
                setUploadError("Database error: " + dbError.message);
                setIsUploading(false);
-               await deleteStorageFiles([publicUrlData?.publicUrl]);
+               await deleteStorageFiles([finalVideoUrl]);
                if (thumbnailSourceType === "upload" && finalThumbnailUrl) {
                  await deleteStorageFiles([finalThumbnailUrl]);
                }
             } else {
-               router.push(`/admin/soon/${soon_id}/content`);
-               router.refresh();
+               window.location.href = `/admin/soon/${soon_id}/content`;
             }
           },
         });
@@ -259,8 +265,7 @@ export default function AddSoonVideoPage({ params }: { params: Promise<{ id: str
         if (dbError) {
           throw new Error("Database error: " + dbError.message);
         } else {
-          router.push(`/admin/soon/${soon_id}/content`);
-          router.refresh();
+          window.location.href = `/admin/soon/${soon_id}/content`;
         }
       }
     } catch (err: any) {
@@ -594,6 +599,25 @@ export default function AddSoonVideoPage({ params }: { params: Promise<{ id: str
                 {formData.published ? "Published (Visible on site)" : "Draft (Hidden from site)"}
               </span>
             </div>
+
+            {postType === "video" && (
+              <div className="space-y-2 md:col-span-2 pt-4 border-t border-border mt-4">
+                <label htmlFor="price" className="text-sm font-medium text-accent">Price (0 for Free Video)</label>
+                <input
+                  id="price"
+                  name="price"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  required
+                  disabled={isUploading}
+                  value={formData.price}
+                  onChange={handleChange}
+                  className="w-full max-w-xs bg-muted border border-border rounded-md px-3 py-2 text-white focus:outline-none focus:border-accent disabled:opacity-50"
+                />
+                <p className="text-xs text-muted-foreground mt-1">If price &gt; 0, the video will require manual access requests and be stored securely.</p>
+              </div>
+            )}
           </div>
 
           {uploadError && (

@@ -37,7 +37,15 @@ export default function WatchClientPage({ video, relatedVideos }: { video: Video
     }
 
     if (authLoading) return;
-    if (!user) return; // UI handles login prompt
+    if (!user) {
+      // Do NOT setSecureUrl(null) here because tab-switching can cause momentary 
+      // null user states from Supabase session sync, which would destroy the player.
+      return; 
+    }
+
+    if (secureUrl) return; // Do not refetch unnecessarily (e.g., on tab switch)
+
+    let isMounted = true;
 
     async function checkAccess() {
       setCheckingAccess(true);
@@ -45,6 +53,8 @@ export default function WatchClientPage({ video, relatedVideos }: { video: Video
         const res = await fetch(`/api/videos/${video.id}/access`);
         const data = await res.json();
         
+        if (!isMounted) return;
+
         if (res.ok && data.url) {
           setSecureUrl(data.url);
           setAccessError(null);
@@ -55,14 +65,50 @@ export default function WatchClientPage({ video, relatedVideos }: { video: Video
           }
         }
       } catch (err) {
+        if (!isMounted) return;
         setAccessError("Failed to verify access");
       } finally {
-        setCheckingAccess(false);
+        if (isMounted) setCheckingAccess(false);
       }
     }
 
     checkAccess();
-  }, [video.id, video.price, video.video_url, user, authLoading]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [video.id, video.price, video.video_url, user, authLoading, secureUrl]);
+
+  // 1.5 Live Access Revocation using Supabase Realtime
+  useEffect(() => {
+    if (!user || !video.price || video.price <= 0) return;
+
+    const supabase = createClient();
+    
+    const channel = supabase
+      .channel(`grant_changes_${video.id}_${user.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'video_access_grants',
+          filter: `video_id=eq.${video.id}`,
+        },
+        (payload) => {
+          if (payload.new.user_id === user.id && payload.new.revoked_at !== null) {
+            setSecureUrl(null);
+            setAccessError("revoked");
+            setCheckingAccess(false);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, video.id, video.price]);
 
   // 2. Request Access Submission
   const handleRequestAccess = async (e: React.FormEvent) => {
@@ -161,7 +207,18 @@ export default function WatchClientPage({ video, relatedVideos }: { video: Video
         </button>
 
         <div className="mb-10 w-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-white/5 relative aspect-video bg-black flex items-center justify-center">
-          {authLoading || checkingAccess ? (
+          {accessError === "revoked" ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80">
+              <img src={video.thumbnail} alt={getLocalizedField(video, 'title', locale)} className="absolute inset-0 w-full h-full object-cover opacity-20" />
+              <div className="relative z-10 text-center flex flex-col items-center gap-6 p-8 bg-black/60 backdrop-blur-md rounded-2xl border border-red-500/30 shadow-2xl">
+                <h3 className="text-xl md:text-2xl font-bold text-red-500">
+                  {locale === 'ar' ? "تم إلغاء وصولك إلى هذا الفيديو." : "Your access to this video has been revoked."}
+                </h3>
+              </div>
+            </div>
+          ) : secureUrl ? (
+            <VideoPlayer url={secureUrl} poster={video.thumbnail} />
+          ) : authLoading || checkingAccess ? (
             <div className="text-white/50">{t("loading")}</div>
           ) : !user && (!video.price || video.price <= 0) ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80">
@@ -190,8 +247,6 @@ export default function WatchClientPage({ video, relatedVideos }: { video: Video
                 </button>
               </div>
             </div>
-          ) : secureUrl ? (
-            <VideoPlayer url={secureUrl} poster={video.thumbnail} />
           ) : (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 p-4">
               <img src={video.thumbnail} alt={getLocalizedField(video, 'title', locale)} className="absolute inset-0 w-full h-full object-cover opacity-20" />

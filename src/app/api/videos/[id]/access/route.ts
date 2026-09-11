@@ -9,19 +9,26 @@ export async function GET(
   try {
     const supabase = await createClient();
     const { id } = await params;
-    
-    // Get user
-    const { data: { user } } = await supabase.auth.getUser();
 
-    // Get video
-    const { data: video, error: videoError } = await supabase
-      .from('videos')
-      .select('id, video_url, price')
-      .eq('id', id)
-      .single();
+    // 1. Parallelize user and video fetch to improve initial load speed
+    const [authRes, videoRes] = await Promise.all([
+      supabase.auth.getUser(),
+      supabase
+        .from('videos')
+        .select('id, video_url, price')
+        .eq('id', id)
+        .single()
+    ]);
+
+    const { data: { user }, error: userError } = authRes;
+    const { data: video, error: videoError } = videoRes;
+
+    if (userError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     if (videoError || !video) {
-      return NextResponse.json({ error: "Video not found" }, { status: 404 });
+      return NextResponse.json({ error: 'Video not found' }, { status: 404 });
     }
 
     // Free video: just return the URL

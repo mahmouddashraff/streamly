@@ -16,6 +16,7 @@ export const dictionaries = {
     guests: "ضيوف",
     soon: "قريباً",
     downloadApp: "حمل التطبيق",
+    ads: "الإعلانات",
 
     // Actions & UI
     watchNow: "شاهد الآن",
@@ -119,6 +120,8 @@ export const dictionaries = {
     accessRequestSubmitted: "تم إرسال طلب الوصول",
     adminWillContact: "سيقوم المسؤول بالتواصل معك لإتمام عملية الشراء.",
     buyVideo: "شراء الفيديو",
+    noPurchasedVideos: "لا توجد فيديوهات مشتراة",
+    noPurchasedVideosDesc: "لم تقم بشراء أي فيديوهات بعد. عندما تقوم بذلك، ستظهر هنا بشكل آمن.",
 
     // Download App
     downloadAppDesc: "تحميل الموقع",
@@ -135,6 +138,30 @@ export const dictionaries = {
     iphoneStep3: "مرر لأسفل واختر \"إضافة إلى الشاشة الرئيسية\".",
     iphoneStep4: "اضغط على \"إضافة\".",
     iphoneFinal: "سيظهر الموقع الآن على الشاشة الرئيسية لهاتف iPhone.",
+
+    // Advertisements
+    advertisements: "الإعلانات",
+    advertisementName: "اسم الإعلان",
+    image: "الصورة",
+    destinationUrl: "رابط الإعلان",
+    position: "الموضع",
+    both: "يسار ويمين",
+    left: "يسار",
+    right: "يمين",
+    adsPage: "صفحة الإعلانات",
+    video: "فيديو",
+    openImageVideo: "فتح الصورة / الفيديو",
+    openLink: "فتح الرابط",
+    active: "مفعل",
+    inactive: "غير مفعل",
+    displayOrder: "ترتيب العرض",
+    addAdvertisement: "إضافة إعلان",
+    editAdvertisement: "تعديل الإعلان",
+    deleteAdvertisement: "حذف الإعلان",
+    enable: "تفعيل",
+    disable: "تعطيل",
+    saveAdvertisement: "حفظ الإعلان",
+    noAdvertisements: "لا توجد إعلانات",
   },
   en: {
     // Brand
@@ -151,6 +178,7 @@ export const dictionaries = {
     guests: "Guests",
     soon: "Soon",
     downloadApp: "Download App",
+    ads: "Ads",
 
     // Actions & UI
     watchNow: "Watch Now",
@@ -254,6 +282,8 @@ export const dictionaries = {
     accessRequestSubmitted: "Access request submitted",
     adminWillContact: "An admin will contact you to complete your purchase.",
     buyVideo: "Buy Video",
+    noPurchasedVideos: "No Purchased Videos",
+    noPurchasedVideosDesc: "You haven't purchased any videos yet. When you do, they will appear securely here.",
 
     // Download App
     downloadAppDesc: "Download the Website",
@@ -270,6 +300,30 @@ export const dictionaries = {
     iphoneStep3: "Scroll down and select \"Add to Home Screen\".",
     iphoneStep4: "Tap \"Add\".",
     iphoneFinal: "The website will now appear on your iPhone home screen.",
+
+    // Advertisements
+    advertisements: "Advertisements",
+    advertisementName: "Advertisement Name",
+    image: "Image",
+    destinationUrl: "Destination URL",
+    position: "Position",
+    both: "Both Sides",
+    left: "Left",
+    right: "Right",
+    adsPage: "Ads Page",
+    video: "Video",
+    openImageVideo: "Open Image / Video",
+    openLink: "Open Link",
+    active: "Active",
+    inactive: "Inactive",
+    displayOrder: "Display Order",
+    addAdvertisement: "Add Advertisement",
+    editAdvertisement: "Edit Advertisement",
+    deleteAdvertisement: "Delete Advertisement",
+    enable: "Enable",
+    disable: "Disable",
+    saveAdvertisement: "Save Advertisement",
+    noAdvertisements: "No Advertisements",
   }
 };
 

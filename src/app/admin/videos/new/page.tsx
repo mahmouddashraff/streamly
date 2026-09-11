@@ -223,8 +223,7 @@ export default function AddVideoPage() {
                  await deleteStorageFiles([finalThumbnailUrl]);
                }
             } else {
-               router.push("/admin/videos");
-               router.refresh();
+               window.location.href = "/admin/videos";
             }
           },
         });
@@ -242,8 +241,7 @@ export default function AddVideoPage() {
         if (dbError) {
           throw new Error("Database error: " + dbError.message);
         } else {
-          router.push("/admin/videos");
-          router.refresh();
+          window.location.href = "/admin/videos";
         }
       }
     } catch (err: any) {

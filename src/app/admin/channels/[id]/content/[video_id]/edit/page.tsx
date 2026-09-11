@@ -45,6 +45,7 @@ export default function EditVideoPage({ params }: { params: Promise<{ id: string
     duration: "",
     video_url: "",
     published: true,
+    price: 0,
     });
 
   useEffect(() => {
@@ -72,6 +73,7 @@ export default function EditVideoPage({ params }: { params: Promise<{ id: string
           duration: videoData.duration,
           video_url: videoData.video_url,
           published: videoData.published,
+          price: videoData.price || 0,
           });
       } else {
         alert("Failed to load video data.");
@@ -167,6 +169,7 @@ export default function EditVideoPage({ params }: { params: Promise<{ id: string
       title: formData.title_en,
       description: formData.description_en,
       year: parseInt(formData.year) || new Date().getFullYear(),
+      price: Number(formData.price) || 0,
       channel_id: parentId,
     };
 
@@ -199,7 +202,7 @@ export default function EditVideoPage({ params }: { params: Promise<{ id: string
       // 2. Process Video
       if (sourceType === "upload" && selectedFile) {
         const fileName = `${crypto.randomUUID()}-${selectedFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-        const bucketName = "videos";
+        const bucketName = updatedVideo.price > 0 ? "secure_videos" : "videos";
         const projectId = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
         if (!projectId) {
@@ -237,26 +240,33 @@ export default function EditVideoPage({ params }: { params: Promise<{ id: string
             setUploadProgress(Number(percentage));
           },
           onSuccess: async function () {
-            const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(fileName);
-            updatedVideo.video_url = publicUrlData.publicUrl;
+            let finalVideoUrl = "";
+            if (bucketName === "videos") {
+              const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(fileName);
+              finalVideoUrl = publicUrlData.publicUrl;
+            } else {
+              finalVideoUrl = `${projectId}/storage/v1/object/authenticated/${bucketName}/${fileName}`;
+            }
+            updatedVideo.video_url = finalVideoUrl;
 
             const { error: dbError } = await supabase.from('videos').update(updatedVideo).eq('id', id);
 
             if (dbError) {
                setUploadError("Database error: " + dbError.message);
                setIsUploading(false);
-               await deleteStorageFiles([publicUrlData?.publicUrl]);
+               await deleteStorageFiles([finalVideoUrl]);
                if (thumbnailSourceType === "upload" && finalThumbnailUrl !== originalThumbnailUrl) {
                  await deleteStorageFiles([finalThumbnailUrl]);
                }
             } else {
-               await deleteStorageFiles([originalVideoUrl]);
+               if (originalVideoUrl !== updatedVideo.video_url) {
+                 await deleteStorageFiles([originalVideoUrl]);
+               }
                if (thumbnailSourceType !== "keep" && finalThumbnailUrl !== originalThumbnailUrl) {
                  await deleteStorageFiles([originalThumbnailUrl]);
                }
-               router.push(`/admin/channels/${parentId}/content`);
-               router.refresh();
-            }
+               window.location.href = `/admin/channels/${parentId}/content`;
+             }
           },
         });
 
@@ -271,6 +281,12 @@ export default function EditVideoPage({ params }: { params: Promise<{ id: string
       } else {
         // Keep or External for Video
         if (sourceType === "keep") {
+          // Prevent turning a public video into a paid video without re-uploading
+          if (updatedVideo.price > 0 && originalVideoUrl.includes('/public/videos/')) {
+            setUploadError("This video is currently stored in the public free bucket. To make it a paid video, you MUST upload it again to move it to the secure bucket.");
+            setIsUploading(false);
+            return;
+          }
           updatedVideo.video_url = originalVideoUrl;
         }
         
@@ -283,8 +299,7 @@ export default function EditVideoPage({ params }: { params: Promise<{ id: string
           if (thumbnailSourceType !== "keep" && finalThumbnailUrl !== originalThumbnailUrl) {
             await deleteStorageFiles([originalThumbnailUrl]);
           }
-          router.push(`/admin/channels/${parentId}/content`);
-          router.refresh();
+          window.location.href = `/admin/channels/${parentId}/content`;
         } else {
           setUploadError("Error updating video: " + error.message);
           setIsUploading(false);
@@ -648,7 +663,23 @@ export default function EditVideoPage({ params }: { params: Promise<{ id: string
                 {formData.published ? "Published (Visible on site)" : "Draft (Hidden from site)"}
               </span>
 
-              
+            </div>
+
+            <div className="space-y-2 md:col-span-2 pt-4 border-t border-border mt-4">
+              <label htmlFor="price" className="text-sm font-medium text-accent">Price (0 for Free Video)</label>
+              <input
+                id="price"
+                name="price"
+                type="number"
+                step="0.01"
+                min="0"
+                required
+                disabled={isUploading}
+                value={formData.price}
+                onChange={handleChange}
+                className="w-full max-w-xs bg-muted border border-border rounded-md px-3 py-2 text-white focus:outline-none focus:border-accent disabled:opacity-50"
+              />
+              <p className="text-xs text-muted-foreground mt-1">If price &gt; 0, the video will require manual access requests and be stored securely.</p>
             </div>
           </div>
 

@@ -26,6 +26,7 @@ export default function AdminSidebar() {
     { name: "Channels", href: "/admin/channels", icon: Film },
     { name: "Guests", href: "/admin/guests", icon: Film },
     { name: "Presenters", href: "/admin/presenters", icon: Film },
+    { name: "Advertisements", href: "/admin/advertisements", icon: Film },
     { name: "Settings", href: "/admin/settings", icon: Settings },
   ];
 
@@ -94,13 +95,18 @@ export default function AdminSidebar() {
         />
       )}
 
-      {/* Sidebar Drawer / Desktop Sidebar */}
+      {/* Mobile Sidebar Drawer */}
       <aside className={cn(
-        "fixed inset-y-0 ltr:left-0 rtl:right-0 z-50 w-64 bg-card ltr:border-r rtl:border-l border-border flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 md:sticky md:top-0 md:h-screen md:flex",
+        "md:hidden fixed inset-y-0 ltr:left-0 rtl:right-0 z-50 w-64 bg-card ltr:border-r rtl:border-l border-border flex flex-col transition-transform duration-300 ease-in-out",
         isOpen 
           ? "translate-x-0" 
           : "ltr:-translate-x-full rtl:translate-x-full"
       )}>
+        <SidebarContent />
+      </aside>
+
+      {/* Desktop Sidebar (Original Restored) */}
+      <aside className="hidden md:flex w-64 bg-card ltr:border-r rtl:border-l border-border h-screen sticky top-0 flex-col shrink-0">
         <SidebarContent />
       </aside>
     </>

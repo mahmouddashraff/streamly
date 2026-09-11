@@ -88,9 +88,9 @@ export default function MyPurchasedVideosPage() {
           <div className="bg-white/5 p-5 rounded-full mb-6">
             <Lock className="w-10 h-10 text-gray-400" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 tracking-tight">No Purchased Videos</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 tracking-tight">{t("noPurchasedVideos")}</h2>
           <p className="text-gray-400 max-w-md mb-10 text-lg leading-relaxed">
-            You haven't purchased any videos yet. When you do, they will appear securely here.
+            {t("noPurchasedVideosDesc")}
           </p>
           <Link 
             href="/"

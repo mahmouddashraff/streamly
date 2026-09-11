@@ -264,8 +264,7 @@ export default function EditVideoPage({ params }: { params: Promise<{ id: string
                if (thumbnailSourceType !== "keep" && finalThumbnailUrl !== originalThumbnailUrl) {
                  await deleteStorageFiles([originalThumbnailUrl]);
                }
-               router.push("/admin/videos");
-               router.refresh();
+               window.location.href = "/admin/videos";
             }
           },
         });
@@ -299,8 +298,7 @@ export default function EditVideoPage({ params }: { params: Promise<{ id: string
           if (thumbnailSourceType !== "keep" && finalThumbnailUrl !== originalThumbnailUrl) {
             await deleteStorageFiles([originalThumbnailUrl]);
           }
-          router.push("/admin/videos");
-          router.refresh();
+          window.location.href = "/admin/videos";
         } else {
           setUploadError("Error updating video: " + error.message);
           setIsUploading(false);

@@ -83,7 +83,8 @@ export async function POST(request: NextRequest) {
       videoTitle: videoTitle,
       videoId: video.id,
       price: video.price,
-      status: "Pending"
+      status: "Pending",
+      requestId: requestData.id
     }).catch(e => console.error("Email send failed:", e));
 
     return NextResponse.json({ success: true, request: requestData });

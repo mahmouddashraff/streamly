@@ -7,6 +7,7 @@ export async function sendAccessRequestEmail(params: {
   videoId: string;
   price: number;
   status: string;
+  requestId: string;
 }) {
   try {
     const resendApiKey = process.env.RESEND_API_KEY;
@@ -39,6 +40,7 @@ ${params.customerMobile}
 
 Video:
 ${params.videoTitle}
+(ID: ${params.videoId})
 
 Price:
 ${params.price}
@@ -47,16 +49,20 @@ Status:
 ${params.status}
 
 Time:
-${formattedDate}`;
+${formattedDate}
+
+Request ID:
+${params.requestId}`;
 
     const htmlBody = `
       <h3>New Video Access Request — STREAMLY</h3>
       <p><strong>Customer:</strong><br/>${params.customerEmail}</p>
       <p><strong>Mobile:</strong><br/>${params.customerMobile}</p>
-      <p><strong>Video:</strong><br/>${params.videoTitle}</p>
+      <p><strong>Video:</strong><br/>${params.videoTitle} (${params.videoId})</p>
       <p><strong>Price:</strong><br/>${params.price}</p>
       <p><strong>Status:</strong><br/>${params.status}</p>
       <p><strong>Time:</strong><br/>${formattedDate}</p>
+      <p><strong>Request ID:</strong><br/>${params.requestId}</p>
     `;
 
     const { error } = await resend.emails.send({

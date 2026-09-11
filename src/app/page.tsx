@@ -6,6 +6,9 @@ import { cookies } from "next/headers";
 import { dictionaries, Locale } from "@/lib/i18n";
 import { Video } from "@/lib/types";
 import { getSiteSettings } from "@/lib/settings";
+import AdLayoutWrapper from "@/components/AdLayoutWrapper";
+import { AdvertisementData } from "@/components/Advertisement";
+import AdVideoRow from "@/components/AdVideoRow";
 
 export const revalidate = 0; // Disable caching to ensure layout updates are immediate
 
@@ -95,19 +98,53 @@ export default async function Home() {
   // Fetch Site Settings
   const settings = await getSiteSettings();
 
+  // 9. Fetch Advertisements
+  const { data: adsData } = await supabase
+    .from('advertisements')
+    .select('*')
+    .eq('active', true)
+    .order('display_order', { ascending: true });
+    
+  const allAds = (adsData || []) as AdvertisementData[];
+  
+  // Left side gets ads where position includes left or both
+  const leftAds = allAds.filter(ad => 
+    ad.position === 'left' || 
+    ad.position === 'both' || 
+    ad.position === 'ads_page_left' || 
+    ad.position === 'ads_page_both'
+  );
+  
+  // Right side gets ads where position includes right or both
+  const rightAds = allAds.filter(ad => 
+    ad.position === 'right' || 
+    ad.position === 'both' || 
+    ad.position === 'ads_page_right' || 
+    ad.position === 'ads_page_both'
+  );
+
+  // 10. Extract Video Ads for Homepage content section
+  const homepageVideoAds = allAds.filter(ad => 
+    ad.media_type === 'video' && 
+    ['ads_page', 'ads_page_left', 'ads_page_right', 'ads_page_both'].includes(ad.position)
+  );
+
   // The rendering order here explicitly dictates the layout.
   // VideoRow internally checks if videos.length === 0 and returns null if so,
   // naturally hiding empty sections without requiring conditional checks here.
   return (
-    <HomeReveal settings={settings}>
-      <EntityRow title={t("soon")} entities={soonEntities} type="soon" />
-      <EntityRow title={t("exclusive")} entities={exclusives} type="exclusive" />
-      <EntityRow title={t("todaysEvent")} entities={todaysEvents} type="todays_event" />
-      <EntityRow title={t("presenters")} entities={presenters} type="presenter" />
-      <EntityRow title={t("podcast")} entities={podcasts} type="podcast" />
-      <EntityRow title={t("channels")} entities={channels} type="channel" />
-      <EntityRow title={t("guests")} entities={guests} type="guest" />
-      <VideoRow title={t("myList")} videos={myListVideos} />
-    </HomeReveal>
+    <AdLayoutWrapper leftAds={leftAds} rightAds={rightAds}>
+      <HomeReveal settings={settings}>
+        <EntityRow title={t("soon")} entities={soonEntities} type="soon" />
+        <EntityRow title={t("exclusive")} entities={exclusives} type="exclusive" />
+        <EntityRow title={t("todaysEvent")} entities={todaysEvents} type="todays_event" />
+        <EntityRow title={t("presenters")} entities={presenters} type="presenter" />
+        <EntityRow title={t("podcast")} entities={podcasts} type="podcast" />
+        <EntityRow title={t("channels")} entities={channels} type="channel" />
+        <EntityRow title={t("guests")} entities={guests} type="guest" />
+        <VideoRow title={t("myList")} videos={myListVideos} />
+        <AdVideoRow title={t("ads")} ads={homepageVideoAds} />
+      </HomeReveal>
+    </AdLayoutWrapper>
   );
 }

@@ -20,8 +20,8 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
               <Advertisement 
                 key={ad.id} 
                 ad={ad} 
-                className="w-full flex-1 min-h-[30vh] lg:min-h-0 rounded-sm lg:rounded-lg overflow-hidden flex flex-col items-center justify-center relative bg-black/5 dark:bg-white/5 lg:bg-transparent lg:dark:bg-transparent" 
-                mediaClassName="w-full h-full object-contain lg:object-cover" 
+                className="w-full h-auto lg:flex-1 rounded-sm lg:rounded-lg overflow-hidden flex flex-col" 
+                mediaClassName="w-full h-auto object-contain lg:h-full lg:object-cover" 
               />
             ))}
           </aside>
@@ -39,8 +39,8 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
               <Advertisement 
                 key={ad.id} 
                 ad={ad} 
-                className="w-full flex-1 min-h-[30vh] lg:min-h-0 rounded-sm lg:rounded-lg overflow-hidden flex flex-col items-center justify-center relative bg-black/5 dark:bg-white/5 lg:bg-transparent lg:dark:bg-transparent" 
-                mediaClassName="w-full h-full object-contain lg:object-cover" 
+                className="w-full h-auto lg:flex-1 rounded-sm lg:rounded-lg overflow-hidden flex flex-col" 
+                mediaClassName="w-full h-auto object-contain lg:h-full lg:object-cover" 
               />
             ))}
           </aside>

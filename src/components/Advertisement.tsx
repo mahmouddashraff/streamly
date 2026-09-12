@@ -68,6 +68,7 @@ export default function Advertisement({ ad, className, mediaClassName, children 
         autoPlay
         loop
         playsInline
+        preload="auto"
         className="absolute inset-0 w-full h-full object-cover blur-xl opacity-50 scale-110 pointer-events-none -z-10"
       />
       {/* Foreground actual media */}
@@ -77,6 +78,7 @@ export default function Advertisement({ ad, className, mediaClassName, children 
         autoPlay
         loop
         playsInline
+        preload="auto"
         className={cn("relative z-10", appliedMediaClass)}
         onError={(e) => {
           e.currentTarget.style.display = 'none';

@@ -122,7 +122,7 @@ export default function Navbar({ settings }: { settings?: any }) {
           <Link 
             href="/" 
             onClick={() => setMobileMenuOpen(false)}
-            className="relative z-10 cursor-pointer pointer-events-auto flex items-center gap-1.5 sm:gap-3 group shrink min-w-0"
+            className="flex items-center gap-1.5 sm:gap-3 group shrink min-w-0"
           >
             {activeLogo && (
               <img 

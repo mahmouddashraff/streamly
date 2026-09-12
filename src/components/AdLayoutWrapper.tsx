@@ -49,7 +49,7 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
         {/* Main Content Area
             overflow-hidden: Strictly prevents website content from escaping and overlapping ads
             rtl:[direction:rtl] ltr:[direction:ltr]: Restores correct LTR/RTL text direction inside */}
-        <div className="min-w-0 max-w-full overflow-hidden rtl:[direction:rtl] ltr:[direction:ltr] mt-32 sm:mt-40 md:mt-0">
+        <div className="min-w-0 max-w-full overflow-hidden rtl:[direction:rtl] ltr:[direction:ltr]">
           {children}
         </div>
 

@@ -90,7 +90,7 @@ export default function Advertisement({ ad, className, mediaClassName, children 
         alt={ad.name}
         className={cn("relative z-10", appliedMediaClass)}
         onError={(e) => {
-          e.currentTarget.style.display = 'none';
+          console.error("Advertisement Image Error: ", e);
         }}
       />
     </div>

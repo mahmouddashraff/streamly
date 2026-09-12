@@ -128,18 +128,18 @@ export default function Navbar({ settings }: { settings?: any }) {
               <img 
                 src={activeLogo} 
                 alt={activeSiteName} 
-                className="h-6 xs:h-7 sm:h-10 md:h-14 lg:h-8 xl:h-10 2xl:h-12 w-auto object-contain transition-transform group-hover:scale-105 shrink-0"
+                className="h-6 xs:h-7 sm:h-10 md:h-14 lg:h-8 xl:h-10 2xl:h-12 w-auto object-contain transition-transform lg:group-hover:scale-105 shrink-0"
               />
             )}
             <div className="flex flex-col items-start text-start shrink min-w-0">
               <span 
-                className="text-xs xs:text-sm sm:text-xl md:text-3xl lg:text-lg xl:text-xl 2xl:text-2xl font-extrabold transition-transform group-hover:scale-105 group-active:scale-95 whitespace-nowrap leading-tight truncate w-full" 
+                className="text-xs xs:text-sm sm:text-xl md:text-3xl lg:text-lg xl:text-xl 2xl:text-2xl font-extrabold transition-transform lg:group-hover:scale-105 active:scale-95 whitespace-nowrap leading-tight truncate w-full" 
                 style={{ fontFamily: '"Alpha Eco", system-ui, sans-serif', color: '#800020' }} 
               >
                 {activeSiteName}
               </span>
               <span 
-                className="text-[9px] xs:text-[10px] sm:text-sm md:text-lg lg:text-xs xl:text-sm 2xl:text-base font-medium tracking-wide mt-0 xs:mt-0.5 transition-transform group-hover:scale-105 whitespace-nowrap truncate w-full"
+                className="text-[9px] xs:text-[10px] sm:text-sm md:text-lg lg:text-xs xl:text-sm 2xl:text-base font-medium tracking-wide mt-0 xs:mt-0.5 transition-transform lg:group-hover:scale-105 whitespace-nowrap truncate w-full"
                 style={{ fontFamily: 'var(--font-qahiri), system-ui, sans-serif', color: '#C0C0C0', wordSpacing: '0.2em' }}
               >
                 {t("producer")}

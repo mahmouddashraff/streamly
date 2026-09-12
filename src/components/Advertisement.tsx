@@ -61,19 +61,6 @@ export default function Advertisement({ ad, className, mediaClassName, children 
 
   const mediaElement = isVideo ? (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-      {/* Background blurred layer */}
-      <video
-        src={ad.image_url}
-        muted
-        autoPlay
-        loop
-        playsInline
-        preload="auto"
-        className="absolute inset-0 w-full h-full object-cover blur-xl opacity-50 scale-110 pointer-events-none -z-10"
-        onError={(e) => {
-          console.error("Advertisement Background Video Error: ", e);
-        }}
-      />
       {/* Foreground actual media */}
       <video
         src={ad.image_url}

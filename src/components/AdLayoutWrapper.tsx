@@ -15,9 +15,14 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
         
         {/* Left Ad Rail */}
         {leftAds.length > 0 && (
-          <aside className="flex w-[clamp(65px,22vw,140px)] lg:w-[160px] xl:w-[200px] 2xl:w-[300px] shrink-0 flex-col gap-2 lg:gap-4 p-1 sm:p-2 lg:p-4 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto overflow-x-hidden no-scrollbar">
+          <aside className="flex w-[75px] min-[375px]:w-[85px] min-[390px]:w-[95px] min-[414px]:w-[105px] sm:w-[120px] md:w-[140px] lg:w-[160px] xl:w-[200px] 2xl:w-[300px] shrink-0 flex-col gap-2 lg:gap-4 p-1 sm:p-2 lg:p-4 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto overflow-x-hidden no-scrollbar">
             {leftAds.map(ad => (
-              <Advertisement key={ad.id} ad={ad} className="w-full lg:flex-1 rounded-sm lg:rounded-lg overflow-hidden" mediaClassName="w-full h-auto lg:h-full object-contain lg:object-cover" />
+              <Advertisement 
+                key={ad.id} 
+                ad={ad} 
+                className="w-full min-h-[120px] sm:min-h-[150px] lg:min-h-0 lg:flex-1 rounded-sm lg:rounded-lg overflow-hidden flex flex-col items-center justify-center bg-black/5 dark:bg-white/5" 
+                mediaClassName="w-full h-auto max-h-[250px] lg:max-h-none lg:h-full object-contain lg:object-cover" 
+              />
             ))}
           </aside>
         )}
@@ -29,9 +34,14 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
 
         {/* Right Ad Rail */}
         {rightAds.length > 0 && (
-          <aside className="flex w-[clamp(65px,22vw,140px)] lg:w-[160px] xl:w-[200px] 2xl:w-[300px] shrink-0 flex-col gap-2 lg:gap-4 p-1 sm:p-2 lg:p-4 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto overflow-x-hidden no-scrollbar">
+          <aside className="flex w-[75px] min-[375px]:w-[85px] min-[390px]:w-[95px] min-[414px]:w-[105px] sm:w-[120px] md:w-[140px] lg:w-[160px] xl:w-[200px] 2xl:w-[300px] shrink-0 flex-col gap-2 lg:gap-4 p-1 sm:p-2 lg:p-4 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto overflow-x-hidden no-scrollbar">
             {rightAds.map(ad => (
-              <Advertisement key={ad.id} ad={ad} className="w-full lg:flex-1 rounded-sm lg:rounded-lg overflow-hidden" mediaClassName="w-full h-auto lg:h-full object-contain lg:object-cover" />
+              <Advertisement 
+                key={ad.id} 
+                ad={ad} 
+                className="w-full min-h-[120px] sm:min-h-[150px] lg:min-h-0 lg:flex-1 rounded-sm lg:rounded-lg overflow-hidden flex flex-col items-center justify-center bg-black/5 dark:bg-white/5" 
+                mediaClassName="w-full h-auto max-h-[250px] lg:max-h-none lg:h-full object-contain lg:object-cover" 
+              />
             ))}
           </aside>
         )}

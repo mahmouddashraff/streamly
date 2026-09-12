@@ -60,26 +60,48 @@ export default function Advertisement({ ad, className, mediaClassName, children 
   const appliedMediaClass = mediaClassName || defaultMediaClass;
 
   const mediaElement = isVideo ? (
-    <video
-      src={ad.image_url}
-      muted
-      autoPlay
-      loop
-      playsInline
-      className={appliedMediaClass}
-      onError={(e) => {
-        e.currentTarget.style.display = 'none';
-      }}
-    />
+    <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+      {/* Background blurred layer */}
+      <video
+        src={ad.image_url}
+        muted
+        autoPlay
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover blur-xl opacity-50 scale-110 pointer-events-none -z-10"
+      />
+      {/* Foreground actual media */}
+      <video
+        src={ad.image_url}
+        muted
+        autoPlay
+        loop
+        playsInline
+        className={cn("relative z-10", appliedMediaClass)}
+        onError={(e) => {
+          e.currentTarget.style.display = 'none';
+        }}
+      />
+    </div>
   ) : (
-    <img
-      src={ad.image_url}
-      alt={ad.name}
-      className={appliedMediaClass}
-      onError={(e) => {
-        e.currentTarget.style.display = 'none';
-      }}
-    />
+    <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+      {/* Background blurred layer */}
+      <img
+        src={ad.image_url}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover blur-xl opacity-50 scale-110 pointer-events-none -z-10"
+      />
+      {/* Foreground actual media */}
+      <img
+        src={ad.image_url}
+        alt={ad.name}
+        className={cn("relative z-10", appliedMediaClass)}
+        onError={(e) => {
+          e.currentTarget.style.display = 'none';
+        }}
+      />
+    </div>
   );
 
   const content = children || mediaElement;

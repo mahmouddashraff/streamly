@@ -14,15 +14,24 @@ export default function AdVideoCard({ ad }: AdVideoCardProps) {
   return (
     <Advertisement ad={ad} className="block group w-full outline-none focus:ring-2 focus:ring-white/50 rounded-lg text-left rtl:text-right">
       <div className="relative aspect-video rounded-lg overflow-hidden bg-muted border border-white/5 shadow-md">
-        {/* Thumbnail: Render the advertisement video exactly like an image cover */}
-        <video
-          src={ad.image_url}
-          className="object-cover w-full h-full transition-transform duration-500 ease-out group-hover:scale-110 group-focus:scale-110"
-          muted
-          playsInline
-          // Note: Not using autoPlay loop here to act like a static thumbnail, 
-          // or we can let the browser pick the poster frame natively.
-        />
+        {ad.media_type === 'video' ? (
+          <video
+            src={ad.image_url}
+            className="object-cover w-full h-full transition-transform duration-500 ease-out group-hover:scale-110 group-focus:scale-110"
+            muted
+            playsInline
+            preload="metadata"
+            onError={(e) => {
+              console.error("AdVideoCard Video Error: ", e);
+            }}
+          />
+        ) : (
+          <img
+            src={ad.image_url}
+            alt={ad.name}
+            className="object-cover w-full h-full transition-transform duration-500 ease-out group-hover:scale-110 group-focus:scale-110"
+          />
+        )}
         
         {/* Subtle Dark Gradient */}
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80" />

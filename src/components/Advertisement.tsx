@@ -70,6 +70,9 @@ export default function Advertisement({ ad, className, mediaClassName, children 
         playsInline
         preload="auto"
         className="absolute inset-0 w-full h-full object-cover blur-xl opacity-50 scale-110 pointer-events-none -z-10"
+        onError={(e) => {
+          console.error("Advertisement Background Video Error: ", e);
+        }}
       />
       {/* Foreground actual media */}
       <video
@@ -81,7 +84,7 @@ export default function Advertisement({ ad, className, mediaClassName, children 
         preload="auto"
         className={cn("relative z-10", appliedMediaClass)}
         onError={(e) => {
-          e.currentTarget.style.display = 'none';
+          console.error("Advertisement Foreground Video Error: ", e);
         }}
       />
     </div>

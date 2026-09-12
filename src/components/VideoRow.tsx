@@ -80,7 +80,7 @@ export default function VideoRow({ title, videos }: VideoRowProps) {
         className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide px-4 md:px-8 snap-x snap-mandatory pb-4"
       >
         {videos.map((video) => (
-          <div key={video.id} className="flex-none w-[70vw] sm:w-[280px] md:w-[320px] lg:w-[350px] snap-start">
+          <div key={video.id} className="flex-none w-[85%] min-w-[160px] max-w-[280px] sm:w-[280px] md:w-[320px] lg:w-[350px] snap-start">
             <VideoCard video={video} />
           </div>
         ))}

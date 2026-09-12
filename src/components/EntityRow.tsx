@@ -76,7 +76,7 @@ export default function EntityRow({ title, entities, type }: EntityRowProps) {
         className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide px-4 md:px-8 snap-x snap-mandatory pb-4"
       >
         {entities.map((entity) => (
-          <div key={entity.id} className="flex-none w-[40vw] sm:w-[180px] md:w-[220px] lg:w-[250px] snap-start">
+          <div key={entity.id} className="flex-none w-[45%] min-w-[110px] max-w-[180px] sm:w-[180px] md:w-[220px] lg:w-[250px] snap-start">
             <EntityCard entity={entity} type={type} />
           </div>
         ))}

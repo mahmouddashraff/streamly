@@ -27,7 +27,6 @@ export default function Advertisement({ ad, className, mediaClassName, children 
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   const videoRef = React.useRef<HTMLVideoElement>(null);
-  const [videoDebug, setVideoDebug] = useState<any>({});
 
   useEffect(() => {
     setIsMounted(true);
@@ -57,48 +56,73 @@ export default function Advertisement({ ad, className, mediaClassName, children 
 
   useEffect(() => {
     if (!videoRef.current || !isVideo) return;
-    const v = videoRef.current;
-    
-    const updateDebug = (eventName: string) => {
-      setVideoDebug((prev: any) => ({
-        ...prev,
-        [eventName]: {
-          src: v.currentSrc,
-          readyState: v.readyState,
-          networkState: v.networkState,
-          width: v.videoWidth,
-          height: v.videoHeight,
-          error: v.error ? v.error.message : null,
-          paused: v.paused,
-          muted: v.muted,
-          clientWidth: v.clientWidth,
-          clientHeight: v.clientHeight,
-        }
-      }));
-      console.log(`[VideoEvent: ${eventName}]`, {
-        src: v.currentSrc,
-        readyState: v.readyState,
-        networkState: v.networkState,
-        width: v.videoWidth,
-        height: v.videoHeight,
-        error: v.error,
-        paused: v.paused,
-        muted: v.muted,
-        clientWidth: v.clientWidth,
-        clientHeight: v.clientHeight,
+    const video = videoRef.current;
+
+    const attemptPlay = (sourceEvent?: string) => {
+      if (!video) return;
+      
+      console.log(`[Video] attemptPlay triggered by ${sourceEvent || 'mount'}`, {
+        readyState: video.readyState,
+        networkState: video.networkState,
+        videoWidth: video.videoWidth,
+        videoHeight: video.videoHeight,
+        currentTime: video.currentTime,
+        paused: video.paused
       });
+
+      if (video.paused) {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log("[Video] play() resolved successfully");
+            })
+            .catch((error) => {
+              console.error("[Video] play() rejected:", error);
+            });
+        }
+      }
     };
 
-    const events = ['loadedmetadata', 'loadeddata', 'canplay', 'error', 'play', 'playing', 'pause', 'suspend', 'stalled'];
-    const handlers = events.map(e => () => updateDebug(e));
+    attemptPlay('initial');
+
+    const handleLoadedData = () => attemptPlay('loadeddata');
+    const handleCanPlay = () => attemptPlay('canplay');
+    const handlePlaying = () => attemptPlay('playing');
     
-    events.forEach((e, i) => v.addEventListener(e, handlers[i]));
-    
-    // Initial log
-    updateDebug('mounted');
+    // Log errors
+    const handleError = (e: Event) => {
+      console.error("[Video] error event fired:", video.error);
+    };
+
+    video.addEventListener('loadeddata', handleLoadedData);
+    video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('playing', handlePlaying);
+    video.addEventListener('error', handleError);
+
+    // Periodically check for 3 seconds to see if it's advancing
+    let checkCount = 0;
+    const intervalId = setInterval(() => {
+      if (checkCount > 3 || !video) {
+        clearInterval(intervalId);
+        return;
+      }
+      console.log(`[Video Check ${checkCount}]`, {
+        currentTime: video.currentTime,
+        readyState: video.readyState,
+        videoWidth: video.videoWidth,
+        videoHeight: video.videoHeight,
+        paused: video.paused
+      });
+      checkCount++;
+    }, 1000);
 
     return () => {
-      events.forEach((e, i) => v.removeEventListener(e, handlers[i]));
+      video.removeEventListener('loadeddata', handleLoadedData);
+      video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('playing', handlePlaying);
+      video.removeEventListener('error', handleError);
+      clearInterval(intervalId);
     };
   }, [isVideo]);
 
@@ -111,11 +135,6 @@ export default function Advertisement({ ad, className, mediaClassName, children 
 
   const mediaElement = isVideo ? (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-      {/* Diagnostic Overlay */}
-      <div className="absolute top-0 left-0 right-0 bg-red-600/90 text-white text-[8px] sm:text-[10px] p-1 z-50 overflow-y-auto max-h-full font-mono break-all whitespace-pre-wrap pointer-events-none">
-        {JSON.stringify(videoDebug, null, 1)}
-      </div>
-      
       {/* Foreground actual media */}
       <video
         ref={videoRef}
@@ -124,7 +143,7 @@ export default function Advertisement({ ad, className, mediaClassName, children 
         autoPlay
         loop
         playsInline
-        preload="metadata"
+        preload="auto"
         className={cn("relative z-10 bg-blue-900/50", appliedMediaClass)}
         onError={(e) => {
           console.error("Advertisement Foreground Video Error: ", e);

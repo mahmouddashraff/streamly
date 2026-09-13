@@ -36,12 +36,15 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
         {hasLeft && (
           <aside id="left-ad-rail" className={adRailClass}>
             {leftAds.map(ad => (
-              <Advertisement 
-                key={ad.id} 
-                ad={ad} 
-                className="bg-white/5 border border-white/10 rounded-sm lg:rounded-lg overflow-hidden aspect-video relative group hover:border-white/20 transition-colors shadow-lg w-full" 
-                mediaClassName="w-full h-full object-cover" 
-              />
+              <div 
+                key={ad.id}
+                className="bg-white/5 border border-white/10 rounded-sm lg:rounded-lg overflow-hidden aspect-video relative group hover:border-white/20 transition-colors shadow-lg w-full"
+              >
+                <Advertisement 
+                  ad={ad} 
+                  className="w-full h-full" 
+                />
+              </div>
             ))}
           </aside>
         )}
@@ -57,12 +60,15 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
         {hasRight && (
           <aside id="right-ad-rail" className={adRailClass}>
             {rightAds.map(ad => (
-              <Advertisement 
-                key={ad.id} 
-                ad={ad} 
-                className="bg-white/5 border border-white/10 rounded-sm lg:rounded-lg overflow-hidden aspect-video relative group hover:border-white/20 transition-colors shadow-lg w-full" 
-                mediaClassName="w-full h-full object-cover" 
-              />
+              <div 
+                key={ad.id}
+                className="bg-white/5 border border-white/10 rounded-sm lg:rounded-lg overflow-hidden aspect-video relative group hover:border-white/20 transition-colors shadow-lg w-full"
+              >
+                <Advertisement 
+                  ad={ad} 
+                  className="w-full h-full" 
+                />
+              </div>
             ))}
           </aside>
         )}

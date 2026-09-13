@@ -55,76 +55,31 @@ export default function Advertisement({ ad, className, mediaClassName, children 
   const isVideo = ad?.media_type === 'video';
 
   useEffect(() => {
-    if (!videoRef.current || !isVideo) return;
-    const video = videoRef.current;
-
-    const attemptPlay = (sourceEvent?: string) => {
-      if (!video) return;
-      
-      console.log(`[Video] attemptPlay triggered by ${sourceEvent || 'mount'}`, {
-        readyState: video.readyState,
-        networkState: video.networkState,
-        videoWidth: video.videoWidth,
-        videoHeight: video.videoHeight,
-        currentTime: video.currentTime,
-        paused: video.paused
-      });
-
-      if (video.paused) {
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              console.log("[Video] play() resolved successfully");
-            })
-            .catch((error) => {
-              console.error("[Video] play() rejected:", error);
-            });
-        }
-      }
-    };
-
-    attemptPlay('initial');
-
-    const handleLoadedData = () => attemptPlay('loadeddata');
-    const handleCanPlay = () => attemptPlay('canplay');
-    const handlePlaying = () => attemptPlay('playing');
-    
-    // Log errors
-    const handleError = (e: Event) => {
-      console.error("[Video] error event fired:", video.error);
-    };
-
-    video.addEventListener('loadeddata', handleLoadedData);
-    video.addEventListener('canplay', handleCanPlay);
-    video.addEventListener('playing', handlePlaying);
-    video.addEventListener('error', handleError);
-
-    // Periodically check for 3 seconds to see if it's advancing
+    // Optionally check playback continuously or handle mounting
     let checkCount = 0;
-    const intervalId = setInterval(() => {
-      if (checkCount > 3 || !video) {
-        clearInterval(intervalId);
-        return;
+    const interval = setInterval(() => {
+      const video = videoRef.current;
+      if (video && checkCount < 3) {
+        console.log(`[Video State] readyState: ${video.readyState}, videoWidth: ${video.videoWidth}, paused: ${video.paused}, currentTime: ${video.currentTime}`);
+        checkCount++;
+      } else {
+        clearInterval(interval);
       }
-      console.log(`[Video Check ${checkCount}]`, {
-        currentTime: video.currentTime,
-        readyState: video.readyState,
-        videoWidth: video.videoWidth,
-        videoHeight: video.videoHeight,
-        paused: video.paused
-      });
-      checkCount++;
     }, 1000);
-
-    return () => {
-      video.removeEventListener('loadeddata', handleLoadedData);
-      video.removeEventListener('canplay', handleCanPlay);
-      video.removeEventListener('playing', handlePlaying);
-      video.removeEventListener('error', handleError);
-      clearInterval(intervalId);
-    };
+    return () => clearInterval(interval);
   }, [isVideo]);
+
+  const tryPlay = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    try {
+      await video.play();
+      console.log("Ad video playback resolved successfully");
+    } catch (error) {
+      console.error("Ad video playback failed:", error);
+    }
+  };
 
   if (!ad || !ad.image_url) return null;
 
@@ -134,20 +89,19 @@ export default function Advertisement({ ad, className, mediaClassName, children 
   const appliedMediaClass = mediaClassName || defaultMediaClass;
 
   const mediaElement = isVideo ? (
-    <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-      {/* Foreground actual media */}
+    <div className="relative w-full h-full overflow-hidden bg-black">
       <video
         ref={videoRef}
         src={ad.image_url}
-        muted
         autoPlay
-        loop
+        muted
         playsInline
+        loop
         preload="auto"
-        className={cn("relative z-10 bg-blue-900/50", appliedMediaClass)}
-        onError={(e) => {
-          console.error("Advertisement Foreground Video Error: ", e);
-        }}
+        className={cn("absolute inset-0 h-full w-full object-cover", appliedMediaClass)}
+        onLoadedData={tryPlay}
+        onCanPlay={tryPlay}
+        onPlaying={() => console.log("Ad video is playing event fired")}
       />
     </div>
   ) : (

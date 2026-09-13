@@ -230,7 +230,7 @@ export default function Navbar({ settings }: { settings?: any }) {
           )}
 
           {!loading && user && (
-            <div className="flex items-center gap-3 md:gap-6">
+            <div className="hidden md:flex items-center gap-6">
               {role === 'admin' && (
                 <Link href="/admin" className="text-white hover:text-accent transition-colors" title={t("dashboard")}>
                    <User className="w-5 h-5" />
@@ -238,13 +238,13 @@ export default function Navbar({ settings }: { settings?: any }) {
               )}
               <Link 
                 href="/my-purchased-videos"
-                className="text-xs sm:text-sm font-bold text-gray-300 hover:text-white transition-colors whitespace-nowrap"
+                className="text-sm font-bold text-gray-300 hover:text-white transition-colors whitespace-nowrap"
               >
                 {t("myPurchasedVideos")}
               </Link>
               <button 
                 onClick={handleSignOut}
-                className="text-xs sm:text-sm font-bold text-gray-300 hover:text-white transition-colors whitespace-nowrap"
+                className="text-sm font-bold text-gray-300 hover:text-white transition-colors whitespace-nowrap"
               >
                 {t("signOut")}
               </button>

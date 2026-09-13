@@ -24,9 +24,26 @@ interface AdvertisementProps {
 export default function Advertisement({ ad, className, mediaClassName, children }: AdvertisementProps) {
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [inView, setInView] = useState(false);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsMounted(true);
+    
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+        }
+      },
+      { rootMargin: "200px" } // Load slightly before it comes into view
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -63,7 +80,7 @@ export default function Advertisement({ ad, className, mediaClassName, children 
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
       {/* Foreground actual media */}
       <video
-        src={ad.image_url}
+        src={inView ? ad.image_url : undefined}
         muted
         autoPlay
         loop
@@ -76,15 +93,8 @@ export default function Advertisement({ ad, className, mediaClassName, children 
       />
     </div>
   ) : (
-    <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-      {/* Background blurred layer */}
-      <img
-        src={ad.image_url}
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover blur-xl opacity-50 scale-110 pointer-events-none -z-10"
-      />
-      {/* Foreground actual media */}
+    <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-black/5">
+      {/* Image actual media */}
       <img
         src={ad.image_url}
         alt={ad.name}
@@ -102,6 +112,7 @@ export default function Advertisement({ ad, className, mediaClassName, children 
     <>
       {clickBehavior === 'image' ? (
         <button
+          ref={containerRef as any}
           onClick={(e) => {
             e.preventDefault();
             setIsViewerOpen(true);
@@ -113,6 +124,7 @@ export default function Advertisement({ ad, className, mediaClassName, children 
         </button>
       ) : (
         <a
+          ref={containerRef as any}
           href={ad.destination_url}
           target="_blank"
           rel="noopener noreferrer"

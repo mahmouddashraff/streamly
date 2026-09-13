@@ -14,7 +14,7 @@ export default function Hero({ onReveal, isOpen, settings }: HeroProps) {
   const { t } = useI18n();
 
   return (
-    <div className="relative h-[85vh] min-h-[600px] w-full flex items-center justify-center mb-12 overflow-hidden">
+    <div id="hero-section" className="relative h-[85vh] min-h-[600px] w-full flex items-center justify-center mb-12 overflow-hidden">
       {/* Background Image & Gradients */}
       <div className="absolute inset-0 z-0">
         <img

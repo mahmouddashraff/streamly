@@ -4,6 +4,8 @@ import { useState } from "react";
 import Hero from "@/components/Hero";
 import { Video } from "@/lib/types";
 
+import MobileAdSpacer from "./MobileAdSpacer";
+
 interface HomeRevealProps {
   children: React.ReactNode;
   settings?: any;
@@ -26,6 +28,7 @@ export default function HomeReveal({ children, settings }: HomeRevealProps) {
         >
           <div className="overflow-hidden">
             <div className="space-y-12 md:space-y-16 pt-8 pb-12">
+              <MobileAdSpacer />
               {children}
             </div>
           </div>

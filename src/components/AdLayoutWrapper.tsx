@@ -34,7 +34,7 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
         
         {/* Left Ad Rail (Always on physical left) */}
         {hasLeft && (
-          <aside className={adRailClass}>
+          <aside id="left-ad-rail" className={adRailClass}>
             {leftAds.map(ad => (
               <Advertisement 
                 key={ad.id} 
@@ -55,7 +55,7 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
 
         {/* Right Ad Rail (Always on physical right) */}
         {hasRight && (
-          <aside className={adRailClass}>
+          <aside id="right-ad-rail" className={adRailClass}>
             {rightAds.map(ad => (
               <Advertisement 
                 key={ad.id} 

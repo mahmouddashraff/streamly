@@ -70,7 +70,7 @@ ${params.requestId}`;
       <p><strong>Request ID:</strong><br/>${params.requestId}</p>
     `;
 
-    const { error } = await resend.emails.send({
+    const result = await resend.emails.send({
       from: "STREAMLY <onboarding@resend.dev>",
       to: adminEmail,
       subject: "New Video Access Request — STREAMLY",
@@ -78,10 +78,17 @@ ${params.requestId}`;
       html: htmlBody,
     });
 
-    if (error) {
-      console.error("Failed to send access request email:", error);
+    if (result.error) {
+      console.error("Failed to send access request email. Error Name:", result.error.name);
+      console.error("Status Code:", (result.error as any).statusCode || (result.error as any).status);
+      console.error("Message:", result.error.message);
+      console.error("Details:", (result.error as any).details || "None");
+      console.error("Raw Error Object:", JSON.stringify(result.error, Object.getOwnPropertyNames(result.error), 2));
     }
+    
+    return result;
   } catch (err) {
     console.error("Error executing sendAccessRequestEmail:", err);
+    return { error: err };
   }
 }

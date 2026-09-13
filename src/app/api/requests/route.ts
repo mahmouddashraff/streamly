@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
       categoryName = `Soon: ${s.title_en || s.title_ar || s.title}`;
     }
 
-    sendAccessRequestEmail({
+    const emailResult = await sendAccessRequestEmail({
       customerEmail: user.email,
       customerMobile: mobile,
       videoTitle: videoTitle,
@@ -133,9 +133,18 @@ export async function POST(request: NextRequest) {
       status: "Pending",
       requestId: requestData.id,
       category: categoryName
-    }).then(() => {
-      console.log(`Email successfully queued for Request ID: ${requestData.id} to CONTACT_EMAIL`);
-    }).catch(e => console.error("Email send failed:", e));
+    });
+    
+    console.log("=== RESEND API RESULT ===");
+    if (emailResult && emailResult.error) {
+      console.log(JSON.stringify({
+        data: (emailResult as any).data,
+        error: JSON.parse(JSON.stringify(emailResult.error, Object.getOwnPropertyNames(emailResult.error)))
+      }, null, 2));
+    } else {
+      console.log(JSON.stringify(emailResult, null, 2));
+    }
+    console.log("=========================");
 
     return NextResponse.json({ success: true, request: requestData });
     

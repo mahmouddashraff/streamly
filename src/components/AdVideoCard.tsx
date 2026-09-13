@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Play } from "lucide-react";
 import Advertisement, { AdvertisementData } from "./Advertisement";
 import { useI18n } from "@/components/I18nProvider";
@@ -10,17 +11,34 @@ interface AdVideoCardProps {
 
 export default function AdVideoCard({ ad }: AdVideoCardProps) {
   const { t } = useI18n();
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  const tryPlay = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    try {
+      await video.play();
+    } catch (error) {
+      console.error("AdVideoCard video playback failed:", error);
+    }
+  };
 
   return (
     <Advertisement ad={ad} className="block group w-full outline-none focus:ring-2 focus:ring-white/50 rounded-lg text-left rtl:text-right">
       <div className="relative aspect-video rounded-lg overflow-hidden bg-muted border border-white/5 shadow-md">
         {ad.media_type === 'video' ? (
           <video
+            ref={videoRef}
             src={ad.image_url}
             className="object-cover w-full h-full transition-transform duration-500 ease-out group-hover:scale-110 group-focus:scale-110"
+            autoPlay
             muted
             playsInline
-            preload="metadata"
+            loop
+            preload="auto"
+            onLoadedData={tryPlay}
+            onCanPlay={tryPlay}
             onError={(e) => {
               console.error("AdVideoCard Video Error: ", e);
             }}

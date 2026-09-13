@@ -119,12 +119,12 @@ export default function Advertisement({ ad, className, mediaClassName, children 
       {/* Foreground actual media */}
       <video
         ref={videoRef}
-        src={`${ad.image_url}#t=0.001`}
+        src={ad.image_url}
         muted
         autoPlay
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         className={cn("relative z-10 bg-blue-900/50", appliedMediaClass)}
         onError={(e) => {
           console.error("Advertisement Foreground Video Error: ", e);

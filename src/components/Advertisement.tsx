@@ -26,6 +26,9 @@ export default function Advertisement({ ad, className, mediaClassName, children 
   const [isMounted, setIsMounted] = useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  const [videoDebug, setVideoDebug] = useState<any>({});
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -50,27 +53,79 @@ export default function Advertisement({ ad, className, mediaClassName, children 
     };
   }, [isViewerOpen]);
 
+  const isVideo = ad?.media_type === 'video';
+
+  useEffect(() => {
+    if (!videoRef.current || !isVideo) return;
+    const v = videoRef.current;
+    
+    const updateDebug = (eventName: string) => {
+      setVideoDebug((prev: any) => ({
+        ...prev,
+        [eventName]: {
+          src: v.currentSrc,
+          readyState: v.readyState,
+          networkState: v.networkState,
+          width: v.videoWidth,
+          height: v.videoHeight,
+          error: v.error ? v.error.message : null,
+          paused: v.paused,
+          muted: v.muted,
+          clientWidth: v.clientWidth,
+          clientHeight: v.clientHeight,
+        }
+      }));
+      console.log(`[VideoEvent: ${eventName}]`, {
+        src: v.currentSrc,
+        readyState: v.readyState,
+        networkState: v.networkState,
+        width: v.videoWidth,
+        height: v.videoHeight,
+        error: v.error,
+        paused: v.paused,
+        muted: v.muted,
+        clientWidth: v.clientWidth,
+        clientHeight: v.clientHeight,
+      });
+    };
+
+    const events = ['loadedmetadata', 'loadeddata', 'canplay', 'error', 'play', 'playing', 'pause', 'suspend', 'stalled'];
+    const handlers = events.map(e => () => updateDebug(e));
+    
+    events.forEach((e, i) => v.addEventListener(e, handlers[i]));
+    
+    // Initial log
+    updateDebug('mounted');
+
+    return () => {
+      events.forEach((e, i) => v.removeEventListener(e, handlers[i]));
+    };
+  }, [isVideo]);
+
   if (!ad || !ad.image_url) return null;
 
-  // Gracefully fallback to 'link' if the column doesn't exist yet
   const clickBehavior = ad.click_behavior || 'link';
-
-  const isVideo = ad.media_type === 'video';
 
   const defaultMediaClass = "w-full h-full object-cover";
   const appliedMediaClass = mediaClassName || defaultMediaClass;
 
   const mediaElement = isVideo ? (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+      {/* Diagnostic Overlay */}
+      <div className="absolute top-0 left-0 right-0 bg-red-600/90 text-white text-[8px] sm:text-[10px] p-1 z-50 overflow-y-auto max-h-full font-mono break-all whitespace-pre-wrap pointer-events-none">
+        {JSON.stringify(videoDebug, null, 1)}
+      </div>
+      
       {/* Foreground actual media */}
       <video
+        ref={videoRef}
         src={`${ad.image_url}#t=0.001`}
         muted
         autoPlay
         loop
         playsInline
-        preload="metadata"
-        className={cn("relative z-10", appliedMediaClass)}
+        preload="auto"
+        className={cn("relative z-10 bg-blue-900/50", appliedMediaClass)}
         onError={(e) => {
           console.error("Advertisement Foreground Video Error: ", e);
         }}

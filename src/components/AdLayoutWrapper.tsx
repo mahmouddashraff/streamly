@@ -39,7 +39,7 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
               <Advertisement 
                 key={ad.id} 
                 ad={ad} 
-                className="w-full flex-1 rounded-sm lg:rounded-lg overflow-hidden flex flex-col" 
+                className="bg-white/5 border border-white/10 rounded-sm lg:rounded-lg overflow-hidden aspect-video relative group hover:border-white/20 transition-colors shadow-lg w-full" 
                 mediaClassName="w-full h-full object-cover" 
               />
             ))}
@@ -60,7 +60,7 @@ export default function AdLayoutWrapper({ children, leftAds, rightAds }: AdLayou
               <Advertisement 
                 key={ad.id} 
                 ad={ad} 
-                className="w-full flex-1 rounded-sm lg:rounded-lg overflow-hidden flex flex-col" 
+                className="bg-white/5 border border-white/10 rounded-sm lg:rounded-lg overflow-hidden aspect-video relative group hover:border-white/20 transition-colors shadow-lg w-full" 
                 mediaClassName="w-full h-full object-cover" 
               />
             ))}

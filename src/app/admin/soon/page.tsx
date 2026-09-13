@@ -23,9 +23,31 @@ export default function AdminSoonPage() {
 
   const handleDelete = async (id: string, title: string, thumbnail: string) => {
     if (confirm(`Are you sure you want to delete "${title}"?`)) {
+      // 1. Fetch child videos and images BEFORE deletion
+      const { data: childVideos } = await supabase
+        .from('videos')
+        .select('video_url, thumbnail')
+        .eq('soon_id', id);
+        
+      const { data: childImages } = await supabase
+        .from('soon_images')
+        .select('image_url')
+        .eq('soon_id', id);
+        
+      const childUrls = [
+        ...(childVideos ? childVideos.flatMap(v => [v.video_url, v.thumbnail]) : []),
+        ...(childImages ? childImages.flatMap(i => [i.image_url]) : [])
+      ];
+      
+      // 2. Delete parent
       const { error } = await supabase.from('soon').delete().eq('id', id);
+      
       if (!error) {
-        await deleteStorageFiles([thumbnail]);
+        // 3. Clean up storage files
+        const allUrlsToDelete = [thumbnail, ...childUrls].filter(Boolean);
+        if (allUrlsToDelete.length > 0) {
+          await deleteStorageFiles(allUrlsToDelete as string[]);
+        }
         
         setSoon(soon.filter(v => v.id !== id));
         router.refresh();

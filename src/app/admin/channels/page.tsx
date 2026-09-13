@@ -23,10 +23,22 @@ export default function AdminChannelsPage() {
 
   const handleDelete = async (id: string, name: string, logo_url: string) => {
     if (confirm(`Are you sure you want to delete "${name}"?`)) {
+      // 1. Fetch child videos BEFORE deletion
+      const { data: childVideos } = await supabase
+        .from('videos')
+        .select('video_url, thumbnail')
+        .eq('channel_id', id);
+        
+      const childUrls = childVideos ? childVideos.flatMap(v => [v.video_url, v.thumbnail]) : [];
+      
+      // 2. Delete parent
       const { error } = await supabase.from('channels').delete().eq('id', id);
+      
       if (!error) {
-        if (logo_url) {
-          await deleteStorageFiles([logo_url]);
+        // 3. Clean up storage files
+        const allUrlsToDelete = [logo_url, ...childUrls].filter(Boolean);
+        if (allUrlsToDelete.length > 0) {
+          await deleteStorageFiles(allUrlsToDelete as string[]);
         }
         
         setChannels(channels.filter(c => c.id !== id));

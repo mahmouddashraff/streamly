@@ -23,9 +23,23 @@ export default function AdminExclusivesPage() {
 
   const handleDelete = async (id: string, title: string, thumbnail: string) => {
     if (confirm(`Are you sure you want to delete "${title}"?`)) {
+      // 1. Fetch child videos BEFORE deletion
+      const { data: childVideos } = await supabase
+        .from('videos')
+        .select('video_url, thumbnail')
+        .eq('exclusive_id', id);
+        
+      const childUrls = childVideos ? childVideos.flatMap(v => [v.video_url, v.thumbnail]) : [];
+      
+      // 2. Delete parent
       const { error } = await supabase.from('exclusives').delete().eq('id', id);
+      
       if (!error) {
-        await deleteStorageFiles([thumbnail]);
+        // 3. Clean up storage files
+        const allUrlsToDelete = [thumbnail, ...childUrls].filter(Boolean);
+        if (allUrlsToDelete.length > 0) {
+          await deleteStorageFiles(allUrlsToDelete as string[]);
+        }
         
         setExclusives(exclusives.filter(v => v.id !== id));
         router.refresh();

@@ -132,17 +132,19 @@ export default async function Home() {
 
   return (
     <AdLayoutWrapper leftAds={leftAds} rightAds={rightAds}>
-      <HomeReveal settings={settings}>
-        <EntityRow title={t("soon")} entities={soonEntities} type="soon" />
-        <EntityRow title={t("exclusive")} entities={exclusives} type="exclusive" />
-        <EntityRow title={t("todaysEvent")} entities={todaysEvents} type="todays_event" />
-        <EntityRow title={t("presenters")} entities={presenters} type="presenter" />
-        <EntityRow title={t("podcast")} entities={podcasts} type="podcast" />
-        <EntityRow title={t("channels")} entities={channels} type="channel" />
-        <EntityRow title={t("guests")} entities={guests} type="guest" />
-        <VideoRow title={t("myList")} videos={myListVideos} />
-        <AdVideoRow title={t("ads")} ads={homepageVideoAds} />
-      </HomeReveal>
+      <div className="w-full md:[&_.container]:w-full md:[&_.container]:max-w-full">
+        <HomeReveal settings={settings}>
+          <EntityRow title={t("soon")} entities={soonEntities} type="soon" />
+          <EntityRow title={t("exclusive")} entities={exclusives} type="exclusive" />
+          <EntityRow title={t("todaysEvent")} entities={todaysEvents} type="todays_event" />
+          <EntityRow title={t("presenters")} entities={presenters} type="presenter" />
+          <EntityRow title={t("podcast")} entities={podcasts} type="podcast" />
+          <EntityRow title={t("channels")} entities={channels} type="channel" />
+          <EntityRow title={t("guests")} entities={guests} type="guest" />
+          <VideoRow title={t("myList")} videos={myListVideos} />
+          <AdVideoRow title={t("ads")} ads={homepageVideoAds} />
+        </HomeReveal>
+      </div>
     </AdLayoutWrapper>
   );
 }

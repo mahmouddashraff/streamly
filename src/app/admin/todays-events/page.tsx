@@ -23,9 +23,23 @@ export default function AdminTodaysEventsPage() {
 
   const handleDelete = async (id: string, title: string, thumbnail: string) => {
     if (confirm(`Are you sure you want to delete "${title}"?`)) {
+      // 1. Fetch child videos BEFORE deletion
+      const { data: childVideos } = await supabase
+        .from('videos')
+        .select('video_url, thumbnail')
+        .eq('todays_event_id', id);
+        
+      const childUrls = childVideos ? childVideos.flatMap(v => [v.video_url, v.thumbnail]) : [];
+      
+      // 2. Delete parent
       const { error } = await supabase.from('todays_events').delete().eq('id', id);
+      
       if (!error) {
-        await deleteStorageFiles([thumbnail]);
+        // 3. Clean up storage files
+        const allUrlsToDelete = [thumbnail, ...childUrls].filter(Boolean);
+        if (allUrlsToDelete.length > 0) {
+          await deleteStorageFiles(allUrlsToDelete as string[]);
+        }
         
         setTodaysEvents(todaysEvents.filter(v => v.id !== id));
         router.refresh();

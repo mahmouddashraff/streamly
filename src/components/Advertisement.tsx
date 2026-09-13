@@ -24,26 +24,10 @@ interface AdvertisementProps {
 export default function Advertisement({ ad, className, mediaClassName, children }: AdvertisementProps) {
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [inView, setInView] = useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsMounted(true);
-    
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-        }
-      },
-      { rootMargin: "200px" } // Load slightly before it comes into view
-    );
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -80,12 +64,12 @@ export default function Advertisement({ ad, className, mediaClassName, children 
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
       {/* Foreground actual media */}
       <video
-        src={inView ? `${ad.image_url}#t=0.001` : undefined}
+        src={`${ad.image_url}#t=0.001`}
         muted
         autoPlay
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         className={cn("relative z-10", appliedMediaClass)}
         onError={(e) => {
           console.error("Advertisement Foreground Video Error: ", e);

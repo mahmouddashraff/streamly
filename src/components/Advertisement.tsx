@@ -80,7 +80,7 @@ export default function Advertisement({ ad, className, mediaClassName, children 
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
       {/* Foreground actual media */}
       <video
-        src={inView ? ad.image_url : undefined}
+        src={inView ? `${ad.image_url}#t=0.001` : undefined}
         muted
         autoPlay
         loop

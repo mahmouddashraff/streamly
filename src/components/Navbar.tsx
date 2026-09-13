@@ -48,11 +48,25 @@ export default function Navbar({ settings }: { settings?: any }) {
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
       document.body.style.overflow = "hidden";
     } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
       document.body.style.overflow = "";
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || "0") * -1);
+      }
     }
     return () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
       document.body.style.overflow = "";
     };
   }, [mobileMenuOpen]);
@@ -119,9 +133,15 @@ export default function Navbar({ settings }: { settings?: any }) {
           </button>
 
           {/* Logo & Site Name */}
-          <Link 
+          <a 
             href="/" 
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={(e) => {
+              e.preventDefault();
+              setMobileMenuOpen(false);
+              if (pathname !== "/") {
+                router.push("/");
+              }
+            }}
             className="flex items-center gap-1.5 sm:gap-3 group shrink min-w-0"
           >
             {activeLogo && (
@@ -145,7 +165,7 @@ export default function Navbar({ settings }: { settings?: any }) {
                 {t("producer")}
               </span>
             </div>
-          </Link>
+          </a>
         </div>
           
         {/* 2. Center: Desktop Nav */}

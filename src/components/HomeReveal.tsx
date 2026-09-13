@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Hero from "@/components/Hero";
-import { Video } from "@/lib/types";
-
 import MobileAdSpacer from "./MobileAdSpacer";
 
 interface HomeRevealProps {
@@ -11,12 +10,22 @@ interface HomeRevealProps {
   settings?: any;
 }
 
-export default function HomeReveal({ children, settings }: HomeRevealProps) {
-  const [isOpen, setIsOpen] = useState(false);
+function HomeRevealContent({ children, settings }: HomeRevealProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  
+  const isOpen = searchParams.has("explore");
+
+  const handleReveal = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("explore", "1");
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   return (
     <div className="pb-24 bg-background">
-      <Hero onReveal={() => setIsOpen(true)} isOpen={isOpen} settings={settings} />
+      <Hero onReveal={handleReveal} isOpen={isOpen} settings={settings} />
       
       <div className="mt-[-120px] md:mt-[-160px] relative z-20">
         <div 
@@ -35,5 +44,17 @@ export default function HomeReveal({ children, settings }: HomeRevealProps) {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function HomeReveal(props: HomeRevealProps) {
+  return (
+    <Suspense fallback={
+      <div className="pb-24 bg-background">
+        <Hero isOpen={false} settings={props.settings} />
+      </div>
+    }>
+      <HomeRevealContent {...props} />
+    </Suspense>
   );
 }

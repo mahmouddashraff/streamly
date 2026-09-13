@@ -136,16 +136,16 @@ export default function Navbar({ settings }: { settings?: any }) {
           <Link 
             href="/" 
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-1.5 sm:gap-3 shrink min-w-0"
+            className="flex items-center gap-1.5 sm:gap-3 shrink min-w-0 py-2 -my-2 touch-manipulation"
           >
             {activeLogo && (
               <img 
                 src={activeLogo} 
                 alt={activeSiteName} 
-                className="h-6 xs:h-7 sm:h-10 md:h-14 lg:h-8 xl:h-10 2xl:h-12 w-auto object-contain shrink-0"
+                className="h-6 xs:h-7 sm:h-10 md:h-14 lg:h-8 xl:h-10 2xl:h-12 w-auto object-contain shrink-0 pointer-events-none"
               />
             )}
-            <div className="flex flex-col items-start text-start shrink min-w-0">
+            <div className="flex flex-col items-start text-start shrink min-w-0 pointer-events-none">
               <span 
                 className="text-xs xs:text-sm sm:text-xl md:text-3xl lg:text-lg xl:text-xl 2xl:text-2xl font-extrabold whitespace-nowrap leading-tight truncate w-full" 
                 style={{ fontFamily: '"Alpha Eco", system-ui, sans-serif', color: '#800020' }} 

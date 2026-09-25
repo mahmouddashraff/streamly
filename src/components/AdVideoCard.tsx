@@ -36,7 +36,7 @@ export default function AdVideoCard({ ad }: AdVideoCardProps) {
             muted
             playsInline
             loop
-            preload="auto"
+            preload="metadata"
             onLoadedData={tryPlay}
             onCanPlay={tryPlay}
             onError={(e) => {

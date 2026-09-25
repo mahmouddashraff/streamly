@@ -97,7 +97,7 @@ export default function Advertisement({ ad, className, mediaClassName, children 
         muted
         playsInline
         loop
-        preload="auto"
+        preload="metadata"
         className={cn("absolute inset-0 h-full w-full object-cover", appliedMediaClass)}
         onLoadedData={tryPlay}
         onCanPlay={tryPlay}

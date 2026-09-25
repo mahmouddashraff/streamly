@@ -32,7 +32,6 @@ export default function AdVideoCard({ ad }: AdVideoCardProps) {
             ref={videoRef}
             src={ad.image_url}
             className="object-cover w-full h-full transition-transform duration-500 ease-out group-hover:scale-110 group-focus:scale-110"
-            autoPlay
             muted
             playsInline
             loop

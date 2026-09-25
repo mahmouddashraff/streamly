@@ -16,97 +16,65 @@ export const revalidate = 0; // Disable caching to ensure layout updates are imm
 export default async function Home() {
   const supabase = await createClient();
 
-  // 1. Fetch Soon Entities
-  const { data: soonData } = await supabase
-    .from('soon')
-    .select('*')
-    .eq('published', true)
-    .order('created_at', { ascending: false });
+  // Execute all independent data fetches concurrently
+  const [
+    { data: soonData },
+    { data: exclusivesData },
+    { data: todaysEventsData },
+    { data: presentersData },
+    { data: podcastsData },
+    { data: channelsData },
+    { data: guestsData },
+    { data: adsData },
+    settings,
+    myListVideos
+  ] = await Promise.all([
+    supabase.from('soon').select('*').eq('published', true).order('created_at', { ascending: false }),
+    supabase.from('exclusives').select('*').eq('published', true).order('created_at', { ascending: false }),
+    supabase.from('todays_events').select('*').eq('published', true).order('created_at', { ascending: false }),
+    supabase.from('presenters').select('*').order('created_at', { ascending: false }),
+    supabase.from('podcasts').select('*').eq('published', true).eq('is_soon', false).order('created_at', { ascending: false }),
+    supabase.from('channels').select('*').order('created_at', { ascending: false }),
+    supabase.from('guests').select('*').order('created_at', { ascending: false }),
+    supabase.from('advertisements').select('*').eq('active', true).order('display_order', { ascending: true }),
+    getSiteSettings(),
+    (async () => {
+      let videos: Video[] = [];
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: userLists } = await supabase
+            .from('user_lists')
+            .select('content_id')
+            .eq('user_id', user.id);
+            
+          if (userLists && userLists.length > 0) {
+            const contentIds = userLists.map(row => row.content_id);
+            const { data: listVideos } = await supabase
+              .from('videos')
+              .select('*')
+              .in('id', contentIds);
+            if (listVideos) videos = listVideos;
+          }
+        }
+      } catch (e) {}
+      return videos;
+    })()
+  ]);
+
   const soonEntities = soonData || [];
-
-  // 2. Fetch Exclusives
-  const { data: exclusivesData } = await supabase
-    .from('exclusives')
-    .select('*')
-    .eq('published', true)
-    .order('created_at', { ascending: false });
   const exclusives = exclusivesData || [];
-
-  // 3. Fetch Today's Events
-  const { data: todaysEventsData } = await supabase
-    .from('todays_events')
-    .select('*')
-    .eq('published', true)
-    .order('created_at', { ascending: false });
   const todaysEvents = todaysEventsData || [];
-
-  // 4. Fetch Presenters
-  const { data: presentersData } = await supabase
-    .from('presenters')
-    .select('*')
-    .order('created_at', { ascending: false });
   const presenters = presentersData || [];
-
-  // 5. Fetch Podcasts
-  const { data: podcastsData } = await supabase
-    .from('podcasts')
-    .select('*')
-    .eq('published', true)
-    .eq('is_soon', false)
-    .order('created_at', { ascending: false });
   const podcasts = podcastsData || [];
-
-  // 6. Fetch Channels
-  const { data: channelsData } = await supabase
-    .from('channels')
-    .select('*')
-    .order('created_at', { ascending: false });
   const channels = channelsData || [];
-
-  // 7. Fetch Guests
-  const { data: guestsData } = await supabase
-    .from('guests')
-    .select('*')
-    .order('created_at', { ascending: false });
   const guests = guestsData || [];
-
-  // 8. Fetch My List if user is logged in
-  let myListVideos: Video[] = [];
-  try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { data: userLists } = await supabase
-        .from('user_lists')
-        .select('content_id')
-        .eq('user_id', user.id);
-        
-      if (userLists && userLists.length > 0) {
-        const contentIds = userLists.map(row => row.content_id);
-        const { data: listVideos } = await supabase
-          .from('videos')
-          .select('*')
-          .in('id', contentIds);
-        if (listVideos) myListVideos = listVideos;
-      }
-    }
-  } catch (e) {}
+  const allAds = (adsData || []) as AdvertisementData[];
 
   // Localization
   const cookieStore = await cookies();
   const locale = (cookieStore.get("NEXT_LOCALE")?.value || "ar") as Locale;
   const t = (key: keyof typeof dictionaries.en) => dictionaries[locale][key] || key;
-
-  // Fetch Site Settings
-  const settings = await getSiteSettings();
-
-  // 9. Fetch Advertisements
-  const { data: adsData } = await supabase
-    .from('advertisements')
-    .select('*')
-    .eq('active', true)
-    .order('display_order', { ascending: true });
-    
-  const allAds = (adsData || []) as AdvertisementData[];
   
   // Left side gets ads where position includes left or both
   const leftAds = allAds.filter(ad => 

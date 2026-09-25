@@ -93,7 +93,6 @@ export default function Advertisement({ ad, className, mediaClassName, children 
       <video
         ref={videoRef}
         src={ad.image_url}
-        autoPlay
         muted
         playsInline
         loop

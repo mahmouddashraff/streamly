@@ -26,7 +26,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   // Safe fetch function that returns empty array if table doesn't exist
   const safeFetch = async (table: string, columns: string, conditions: string): Promise<any[]> => {
     try {
-      const { data, error } = await supabase.from(table).select(columns).or(conditions);
+      const { data, error } = await supabase.from(table).select(columns).or(conditions).limit(100);
       if (error) return [];
       return data || [];
     } catch {
@@ -81,7 +81,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 {channels.map((c: any) => (
                   <Link href={`/channels/${c.id}`} key={c.id} className="group flex flex-col items-center text-center">
                     <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 overflow-hidden mb-4 group-hover:scale-105 transition-transform group-hover:border-white/30">
-                       <img src={c.logo_url || "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(c, 'name', locale)} className="w-full h-full object-cover" />
+                       <img src={c.logo_url || "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(c, 'name', locale)} className="w-full h-full object-cover" loading="lazy" />
                     </div>
                     <span className="font-semibold group-hover:text-white transition-colors text-white/80">{getLocalizedField(c, 'name', locale)}</span>
                   </Link>
@@ -97,7 +97,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 {guests.map((g: any) => (
                   <Link href={`/guests/${g.id}`} key={g.id} className="group flex flex-col items-center text-center">
                     <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 overflow-hidden mb-4 group-hover:scale-105 transition-transform group-hover:border-white/30">
-                       <img src={g.image_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(g, 'name', locale)} className="w-full h-full object-cover" />
+                       <img src={g.image_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(g, 'name', locale)} className="w-full h-full object-cover" loading="lazy" />
                     </div>
                     <span className="font-semibold group-hover:text-white transition-colors text-white/80">{getLocalizedField(g, 'name', locale)}</span>
                   </Link>
@@ -113,7 +113,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 {presenters.map((p: any) => (
                   <Link href={`/categories`} key={p.id} className="group flex flex-col items-center text-center">
                     <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 overflow-hidden mb-4 group-hover:scale-105 transition-transform group-hover:border-white/30">
-                       <img src={p.image_url || "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(p, 'name', locale)} className="w-full h-full object-cover" />
+                       <img src={p.image_url || "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(p, 'name', locale)} className="w-full h-full object-cover" loading="lazy" />
                     </div>
                     <span className="font-semibold group-hover:text-white transition-colors text-white/80">{getLocalizedField(p, 'name', locale)}</span>
                   </Link>

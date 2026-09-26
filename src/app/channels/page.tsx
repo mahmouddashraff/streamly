@@ -13,7 +13,7 @@ export default async function ChannelsPage() {
   
   let channels: any[] = [];
   try {
-    const { data } = await supabase.from('channels').select('*');
+    const { data } = await supabase.from('channels').select('*').limit(100);
     if (data) channels = data;
   } catch (e) {
     console.error("Channels table not available");
@@ -30,7 +30,7 @@ export default async function ChannelsPage() {
           {channels.map((c: any) => (
             <Link href={`/channels/${c.id}`} key={c.id} className="group flex flex-col items-center text-center">
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white/5 border border-white/10 overflow-hidden mb-4 group-hover:scale-105 transition-transform group-hover:border-white/30 shadow-lg">
-                 <img src={c.logo_url || "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(c, 'name', locale)} className="w-full h-full object-cover" />
+                 <img src={c.logo_url || "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(c, 'name', locale)} className="w-full h-full object-cover" loading="lazy" />
               </div>
               <span className="font-semibold text-lg group-hover:text-white transition-colors text-white/80">{getLocalizedField(c, 'name', locale)}</span>
               <p className="text-sm text-gray-400 mt-2 line-clamp-2">{getLocalizedField(c, 'description', locale)}</p>

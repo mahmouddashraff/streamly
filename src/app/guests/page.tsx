@@ -13,7 +13,7 @@ export default async function GuestsPage() {
   
   let guests: any[] = [];
   try {
-    const { data } = await supabase.from('guests').select('*');
+    const { data } = await supabase.from('guests').select('*').limit(100);
     if (data) guests = data;
   } catch (e) {
     console.error("Guests table not available");
@@ -30,7 +30,7 @@ export default async function GuestsPage() {
           {guests.map((g: any) => (
             <Link href={`/guests/${g.id}`} key={g.id} className="group flex flex-col items-center text-center">
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white/5 border border-white/10 overflow-hidden mb-4 group-hover:scale-105 transition-transform group-hover:border-white/30 shadow-lg">
-                 <img src={g.image_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(g, 'name', locale)} className="w-full h-full object-cover" />
+                 <img src={g.image_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(g, 'name', locale)} className="w-full h-full object-cover" loading="lazy" />
               </div>
               <span className="font-semibold text-lg group-hover:text-white transition-colors text-white/80">{getLocalizedField(g, 'name', locale)}</span>
             </Link>

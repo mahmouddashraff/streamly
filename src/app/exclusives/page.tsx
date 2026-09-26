@@ -13,7 +13,7 @@ export default async function ExclusivesPage() {
   
   let exclusives: any[] = [];
   try {
-    const { data } = await supabase.from('exclusives').select('*').eq('published', true).order('created_at', { ascending: false });
+    const { data } = await supabase.from('exclusives').select('*').eq('published', true).order('created_at', { ascending: false }).limit(100);
     if (data) exclusives = data;
   } catch (e) {
     console.error("Exclusives table not available");
@@ -30,7 +30,7 @@ export default async function ExclusivesPage() {
           {exclusives.map((p: any) => (
             <Link href={`/exclusives/${p.id}`} key={p.id} className="group flex flex-col items-center text-center">
               <div className="w-full aspect-video rounded-lg bg-white/5 border border-white/10 overflow-hidden mb-4 group-hover:scale-105 transition-transform group-hover:border-white/30 shadow-lg">
-                 <img src={p.thumbnail || "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(p, 'title', locale)} className="w-full h-full object-cover" />
+                 <img src={p.thumbnail || "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(p, 'title', locale)} className="w-full h-full object-cover" loading="lazy" />
               </div>
               <span className="font-semibold text-lg group-hover:text-white transition-colors text-white/80">{getLocalizedField(p, 'title', locale)}</span>
               <p className="text-sm text-gray-400 mt-2 line-clamp-2">{getLocalizedField(p, 'description', locale)}</p>

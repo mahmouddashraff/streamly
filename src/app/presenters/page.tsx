@@ -13,7 +13,7 @@ export default async function PresentersPage() {
   
   let presenters: any[] = [];
   try {
-    const { data } = await supabase.from('presenters').select('*');
+    const { data } = await supabase.from('presenters').select('*').limit(100);
     if (data) presenters = data;
   } catch (e) {
     console.error("Presenters table not available");
@@ -30,7 +30,7 @@ export default async function PresentersPage() {
           {presenters.map((p: any) => (
             <Link href={`/presenters/${p.id}`} key={p.id} className="group flex flex-col items-center text-center">
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white/5 border border-white/10 overflow-hidden mb-4 group-hover:scale-105 transition-transform group-hover:border-white/30 shadow-lg">
-                 <img src={p.image_url || "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(p, 'name', locale)} className="w-full h-full object-cover" />
+                 <img src={p.image_url || "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=500&auto=format&fit=crop&q=60"} alt={getLocalizedField(p, 'name', locale)} className="w-full h-full object-cover" loading="lazy" />
               </div>
               <span className="font-semibold text-lg group-hover:text-white transition-colors text-white/80">{getLocalizedField(p, 'name', locale)}</span>
             </Link>
